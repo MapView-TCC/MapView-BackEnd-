@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS location (
 -- Creating the Cost Center table (centro de custo)
 CREATE TABLE IF NOT EXISTS cost_center (
     id_cost_center INT AUTO_INCREMENT PRIMARY KEY,
-    cost_center_name VARCHAR(255) UNIQUE NOT NULL,
+    cost_center_name VARCHAR(255) NOT NULL,
     operative TINYINT NOT NULL
 );
 

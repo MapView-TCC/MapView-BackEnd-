@@ -1,8 +1,9 @@
 package com.MapView.BackEnd.ServiceImp;
 
-import com.MapView.BackEnd.dtos.CostCenter.CostCenterDTO;
+import com.MapView.BackEnd.dtos.CostCenter.CostCenterCreateDTO;
 import com.MapView.BackEnd.Repository.CostCenterRepository;
 import com.MapView.BackEnd.Service.CostCenterService;
+import com.MapView.BackEnd.dtos.CostCenter.CostCenterDetailsDTO;
 import com.MapView.BackEnd.entities.CostCenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,10 @@ public class CostCenterServiceImp implements CostCenterService {
     }
 
     @Override
-    public void createCostCenter(CostCenterDTO dados) {
-        costCenterRepository.save(new CostCenter(dados));
+    public CostCenterDetailsDTO createCostCenter(CostCenterCreateDTO dados) {
+        var costcenter = new CostCenter(dados);
+        costCenterRepository.save(costcenter);
+        return new CostCenterDetailsDTO(costcenter);
     }
 
     @Override
