@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.apache.catalina.User;
 
+import java.util.Set;
+
 @Table(name = "responsible")
 @Entity(name = "responsible")
 @Getter
@@ -27,6 +29,9 @@ public class Responsible {
     @JoinColumn(name = "id_user")
     private Users id_user;
     private boolean operative;
+
+    @OneToMany(mappedBy = "id_responsible")
+    private Set<EquipmentResponsible> equipmentResponsibles;
 
 
 

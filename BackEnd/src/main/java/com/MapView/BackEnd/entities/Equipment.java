@@ -4,6 +4,8 @@ import com.MapView.BackEnd.dtos.Equipment.EquipmentCreateDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Table(name = "equipment")
 @Entity(name = "equipment")
 @Getter
@@ -28,6 +30,10 @@ public class Equipment {
     @JoinColumn(name = "id_owner")
     private MainOwner id_owner;
     private boolean operative;
+
+    @OneToMany(mappedBy = "id_equipment")
+    private Set<EquipmentResponsible> equipmentResponsibles;
+
 
     public Equipment(EquipmentCreateDTO data, Location location, MainOwner id_owner) {
         this.id_equipment = data.id_equipment();

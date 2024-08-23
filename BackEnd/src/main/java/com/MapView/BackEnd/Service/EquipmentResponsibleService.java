@@ -1,18 +1,23 @@
 package com.MapView.BackEnd.Service;
 
+import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleCreateDTO;
+import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleDetailsDTO;
+import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleUpdateDTO;
 import com.MapView.BackEnd.entities.Equipment;
 import com.MapView.BackEnd.entities.Location;
 import com.MapView.BackEnd.entities.MainOwner;
 import com.MapView.BackEnd.entities.Responsible;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface EquipmentResponsibleService {
 
-    void getEquipmentResponsible(Long id_equip_resp);
-    void getAllEquipmentResponsible();
-    void createEquipmentResponsible(Long id_equip_resp, Equipment id_equipment, Responsible id_responsible, LocalDate start_usage, LocalDate end_usage);
-    void updateEquipmentResponsible(Equipment id_equipment, Responsible id_responsible, LocalDate start_usage, LocalDate end_usage);
+    EquipmentResponsibleDetailsDTO getEquipmentResponsible(Long id_equip_resp);
+    List<EquipmentResponsibleDetailsDTO> getAllEquipmentResponsible();
+    EquipmentResponsibleDetailsDTO createEquipmentResponsible(EquipmentResponsibleCreateDTO equipmentResponsibleCreateDTO);
+    EquipmentResponsibleDetailsDTO updateEquipmentResponsible(Long id_equip_resp, EquipmentResponsibleUpdateDTO dados);
+
     void activateEquipmentResponsible(Long id_equip_resp); // put
     void inactivateEquipmentResponsible(Long id_equip_resp); // put
 
