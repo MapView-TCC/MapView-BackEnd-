@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.security.PublicKey;
+import java.util.Set;
 
 @Table(name = "post")
 @Entity(name = "post")
@@ -20,7 +21,8 @@ public class Post {
     private Long id_post;
     private String post;
     private boolean operative;
-
+    @OneToMany(mappedBy = "post")
+    private Set<Location> location;
 
 
     public Post(PostCreateDTO data){
@@ -28,9 +30,6 @@ public class Post {
         this.operative = true;
 
     }
-
-
-
     public boolean post_status_check(){
         return this.operative;
     }

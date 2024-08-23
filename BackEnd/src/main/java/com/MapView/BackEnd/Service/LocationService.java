@@ -1,19 +1,22 @@
 package com.MapView.BackEnd.Service;
 
+import com.MapView.BackEnd.dtos.Location.LocationCreateDTO;
+import com.MapView.BackEnd.dtos.Location.LocationDetalsDTO;
+import com.MapView.BackEnd.dtos.Location.LocationUpdateDTO;
 import com.MapView.BackEnd.entities.Enviroment;
 import com.MapView.BackEnd.entities.Equipment;
 import com.MapView.BackEnd.entities.Post;
 import com.MapView.BackEnd.entities.Responsible;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface LocationService {
 
-    void getLocation(Long id_location);
-    void getAllLocation();
-    void createLocation(Long id_location, Post id_post, Enviroment id_enviroment);
-    void updateLocation(Post id_post, Enviroment id_enviroment);
-    void activateLocation(Long id_location); // put
-    void inactivateLocation(Long id_location); // put
+    LocationDetalsDTO getLocation(Long id_location);
+    List<LocationDetalsDTO> getAllLocation();
+    LocationDetalsDTO createLocation(LocationCreateDTO data);
+    LocationDetalsDTO updateLocation(Long id_location, LocationUpdateDTO data);
+
 
 }

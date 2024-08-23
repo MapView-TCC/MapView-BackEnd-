@@ -1,4 +1,4 @@
 package com.MapView.BackEnd.dtos.Location;
 
-public record LocationCreateDTO() {
+public record LocationCreateDTO(Long id_post,Long id_eviroment) {
 }

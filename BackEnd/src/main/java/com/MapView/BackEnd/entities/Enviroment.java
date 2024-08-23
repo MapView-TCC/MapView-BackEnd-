@@ -4,6 +4,8 @@ import com.MapView.BackEnd.dtos.Enviroment.EnviromentCreateDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Table(name = "environment")
 @Entity(name = "environment")
 @Getter
@@ -22,6 +24,8 @@ public class Enviroment {
     private Raspberry id_raspberry;
     private boolean operative;
 
+    @OneToMany(mappedBy = "enviroment")
+    private Set<Location> locationSet;
 
     public Enviroment(EnviromentCreateDTO data,Raspberry raspberry){
         this.environment_name = data.environment_name();

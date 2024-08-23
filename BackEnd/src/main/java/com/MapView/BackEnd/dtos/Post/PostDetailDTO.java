@@ -8,3 +8,4 @@ public record PostDetailDTO(Long id_post,String post) {
         this(post.getId_post(), post.getPost());
     }
 }
+    
