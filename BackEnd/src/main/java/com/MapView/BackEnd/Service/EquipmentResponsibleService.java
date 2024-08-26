@@ -17,7 +17,6 @@ public interface EquipmentResponsibleService {
     List<EquipmentResponsibleDetailsDTO> getAllEquipmentResponsible();
     EquipmentResponsibleDetailsDTO createEquipmentResponsible(EquipmentResponsibleCreateDTO equipmentResponsibleCreateDTO);
     EquipmentResponsibleDetailsDTO updateEquipmentResponsible(Long id_equip_resp, EquipmentResponsibleUpdateDTO dados);
-
     void activateEquipmentResponsible(Long id_equip_resp); // put
     void inactivateEquipmentResponsible(Long id_equip_resp); // put
 
