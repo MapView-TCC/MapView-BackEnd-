@@ -25,8 +25,8 @@ public class RaspberryController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<RaspberryDetailsDTO> createRaspberry(@RequestBody @Valid RaspberryCreateDTO raspberryCreateDTO, UriComponentsBuilder uriBuilder){
-        var raspberry = raspberryServiceImp.createRaspberry(raspberryCreateDTO);
+    public ResponseEntity<RaspberryDetailsDTO> createRaspberry(@RequestBody @Valid RaspberryCreateDTO raspberryCreateDTO,@RequestParam Long user_id, UriComponentsBuilder uriBuilder){
+        var raspberry = raspberryServiceImp.createRaspberry(raspberryCreateDTO, user_id);
 
         // boa pratica, para retornar o caminho
         var uri = uriBuilder.path("/api/v1/raspberry/{id}").buildAndExpand(raspberry.id_raspberry()).toUri();
@@ -34,35 +34,35 @@ public class RaspberryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RaspberryDetailsDTO>> getAllRaspberry(@RequestParam int page, @RequestParam int itens){
-        var list = raspberryServiceImp.getAllRaspberry(page,itens);
+    public ResponseEntity<List<RaspberryDetailsDTO>> getAllRaspberry(@RequestParam int page, @RequestParam int itens, @RequestParam Long user_id){
+        var list = raspberryServiceImp.getAllRaspberry(page,itens, user_id);
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RaspberryDetailsDTO> getRaspberry(@PathVariable Long id){
-        RaspberryDetailsDTO raspberry = raspberryServiceImp.getRaspberry(id);
+    public ResponseEntity<RaspberryDetailsDTO> getRaspberry(@PathVariable Long id, @RequestParam Long user_id){
+        RaspberryDetailsDTO raspberry = raspberryServiceImp.getRaspberry(id, user_id);
         return ResponseEntity.ok(raspberry);
     }
 
     @PutMapping("/{id_raspberry}")
     @Transactional
-    public ResponseEntity<RaspberryDetailsDTO> updateRaspberry(@PathVariable Long id_raspberry, @RequestBody RaspberryUpdateDTO dados){
-        RaspberryDetailsDTO updateRaspberry = raspberryServiceImp.updateRaspberry(id_raspberry, dados);
+    public ResponseEntity<RaspberryDetailsDTO> updateRaspberry(@PathVariable Long id_raspberry, @RequestBody RaspberryUpdateDTO dados, @RequestParam Long user_id){
+        RaspberryDetailsDTO updateRaspberry = raspberryServiceImp.updateRaspberry(id_raspberry, dados, user_id);
         return ResponseEntity.ok(updateRaspberry);
     }
 
     @PutMapping("/inactivate/{id}")
     @Transactional
-    public ResponseEntity<Void> inactivate(@PathVariable Long id){
-        raspberryServiceImp.inactivateRaspberry(id);
+    public ResponseEntity<Void> inactivate(@PathVariable Long id, @RequestParam Long user_id){
+        raspberryServiceImp.inactivateRaspberry(id, user_id);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/active/{id}")
     @Transactional
-    public ResponseEntity<Void> active(@PathVariable Long id){
-        raspberryServiceImp.activeRaspberry(id);
+    public ResponseEntity<Void> active(@PathVariable Long id, @RequestParam Long user_id){
+        raspberryServiceImp.activeRaspberry(id, user_id);
         return ResponseEntity.ok().build();
     }
 

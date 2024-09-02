@@ -3,6 +3,7 @@ package com.MapView.BackEnd.serviceImp;
 import com.MapView.BackEnd.entities.UserLog;
 import com.MapView.BackEnd.enums.EnumAction;
 import com.MapView.BackEnd.repository.ClassesRepository;
+import com.MapView.BackEnd.repository.UserLogRepository;
 import com.MapView.BackEnd.repository.UserRepository;
 import com.MapView.BackEnd.service.ClassesService;
 import com.MapView.BackEnd.dtos.Classes.ClassesCreateDTO;
@@ -22,9 +23,9 @@ public class ClassesServiceImp implements ClassesService {
 
     private final ClassesRepository classesRepository;
     private final UserRepository userRepository;
-    private final UserLogService userLogService;
+    private final UserLogRepository userLogService;
 
-    public ClassesServiceImp(ClassesRepository classesRepository, UserRepository userRepository, UserLogService userLogService) {
+    public ClassesServiceImp(ClassesRepository classesRepository, UserRepository userRepository, UserLogRepository userLogService) {
         this.classesRepository = classesRepository;
         this.userRepository = userRepository;
         this.userLogService = userLogService;
@@ -36,7 +37,7 @@ public class ClassesServiceImp implements ClassesService {
         Long id_classes = classesRepository.save(classe).getId_classes();
 
         var userLog = new UserLog(null,"Classes", id_classes,"Create new classes", EnumAction.CREATE);
-        userLogService.createUserLog(id_user,userLog);
+        userLogService.save(userLog);
 
         return new ClassesDetaiLDTO(classe);
     }
@@ -48,8 +49,8 @@ public class ClassesServiceImp implements ClassesService {
             return null;
         }
 
-        var userLog = new UserLog(null,"Classe",id,"Read Area",EnumAction.READ);
-        userLogService.createUserLog(user_id,userLog);
+        var userLog = new UserLog(null,"Classe",id,"Read Classes",EnumAction.READ);
+        userLogService.save(userLog);
 
         return new ClassesDetaiLDTO(classe);
     }
@@ -72,7 +73,7 @@ public class ClassesServiceImp implements ClassesService {
             userlog.setDescription("classes to: " + data.classes());
         }
         classesRepository.save(classes);
-        userLogService.createUserLog(user_id,userlog);
+        userLogService.save(userlog);
 
         return new ClassesDetaiLDTO(classes);
     }
@@ -80,7 +81,7 @@ public class ClassesServiceImp implements ClassesService {
     @Override
     public List<ClassesDetaiLDTO> getAllClasses(int page, int itens, Long user_id) {
         var userLog = new UserLog(null,"Classes","Read All Classes", EnumAction.READ);
-        userLogService.createUserLog(user_id,userLog);
+        userLogService.save(userLog);
         return this.classesRepository.findClassesByOperativeTrue(PageRequest.of(page, itens)).stream().map(ClassesDetaiLDTO::new).toList();
     }
 
@@ -92,8 +93,8 @@ public class ClassesServiceImp implements ClassesService {
             classes.setOperative(true);
         }
 
-        var userLog = new UserLog(null,"Classes",class_id,"Operative","Activated Area",EnumAction.UPDATE);
-        userLogService.createUserLog(user_id,userLog);
+        var userLog = new UserLog(null,"Classes",class_id,"Operative","Activated Classes",EnumAction.UPDATE);
+        userLogService.save(userLog);
     }
 
     @Override
@@ -104,8 +105,8 @@ public class ClassesServiceImp implements ClassesService {
             classes.setOperative(false);
         }
 
-        var userLog = new UserLog(null,"Classes",class_id,"Operative","Activated Area",EnumAction.UPDATE);
-        userLogService.createUserLog(user_id,userLog);
+        var userLog = new UserLog(null,"Classes",class_id,"Operative","Inactivated Classes",EnumAction.UPDATE);
+        userLogService.save(userLog);
 
     }
 
