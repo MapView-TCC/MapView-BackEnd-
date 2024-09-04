@@ -24,5 +24,4 @@ public record EquipmentDetailsDTO(
              equipment.getOwner(), equipment.isOperative());
     }
 
-
 }

@@ -10,6 +10,10 @@ import com.MapView.BackEnd.repository.*;
 import com.MapView.BackEnd.service.EquipmentService;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentCreateDTO;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentDetailsDTO;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,13 +24,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class EquipmentServiceImp implements EquipmentService {
-
-
+    @PersistenceContext
+    private final EntityManager entityManager;
     private final EquipmentRepository equipmentRepository ;
     private final LocationRepository locationRepository;
     private final MainOwnerRepository mainOwnerRepository;
@@ -34,8 +39,10 @@ public class EquipmentServiceImp implements EquipmentService {
     private final UserRepository userRepository;
     private final Path fileStorageLocation;
 
-    public EquipmentServiceImp(EquipmentRepository equipmentRepository, LocationRepository locationRepository, MainOwnerRepository mainOwnerRepository,
+
+    public EquipmentServiceImp(EntityManager entityManager, EquipmentRepository equipmentRepository, LocationRepository locationRepository, MainOwnerRepository mainOwnerRepository,
                                UserLogRepository userLogRepository, UserRepository userRepository, FileStorageProperties fileStorageProperties) {
+        this.entityManager = entityManager;
         this.equipmentRepository = equipmentRepository;
         this.locationRepository = locationRepository;
         this.mainOwnerRepository = mainOwnerRepository;
@@ -199,26 +206,67 @@ public class EquipmentServiceImp implements EquipmentService {
                                                             String id_owner, String id_equipment,
                                                             String name_equipment, String post) {
 
-        List<Equipment> filteredEquipments = equipmentRepository.findAllByOperativeTrue(PageRequest.of(page, itens))
-                .stream()
-                .filter(e -> (validity == null || e.getValidity().equals(validity)) &&
-                        (environment == null || e.getLocation().getEnvironment().getEnvironment_name().equals(environment)) &&
-                        (mainOwner == null || e.getOwner().getOwner_name().equals(mainOwner)) &&
-                        (id_owner == null || e.getOwner().getId_owner().equals(id_owner)) &&
-                        (id_equipment == null || e.getId_equipment().equals(id_equipment)) &&
-                        (name_equipment == null || e.getName_equipment().equals(name_equipment)) &&
-                        (post == null || e.getLocation().getPost().getPost().equals(post)))
-                .toList();
 
 
-        if (validity == null && environment == null && mainOwner == null && id_owner == null && id_equipment == null &&
-                name_equipment == null && post == null) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Equipment> criteriaQuery = criteriaBuilder.createQuery(Equipment.class);
+
+
+
+        //Select From Equipment
+        Root<Equipment> equipmentRoot = criteriaQuery.from(Equipment.class);
+        Root<Post> postRoot = criteriaQuery.from(Post.class);
+        Root<Location> locationRootRoot = criteriaQuery.from(Location.class);
+
+        Join<Equipment,MainOwner> mainOwnerJoin = equipmentRoot.join("owner");
+        Join<Equipment, Location> locationJoin = equipmentRoot.join("location");
+        Join<Equipment, Location> locationPostJoin = equipmentRoot.join("post");
+        Join<Location, Post> PostJoin = locationPostJoin.join("post");
+
+        Join<Location, Enviroment> enviromentJoin = locationJoin.join("id_environment");
+
+
+        List<Predicate> predicate = new ArrayList<>();
+
+        //WHERE
+
+        if(validity != null){
+            predicate.add(criteriaBuilder.like(equipmentRoot.get("validity"), "%"+validity+"%"));
+        }
+        if (environment != null){
+            predicate.add(criteriaBuilder.like(enviromentJoin.get("id_location"), "%"+environment+"%"));
+        }
+        if (mainOwner != null){
+            predicate.add(criteriaBuilder.like(mainOwnerJoin.get("owner_name"), "%" + mainOwner + "%"));
+        }
+        if(id_owner != null){
+            predicate.add(criteriaBuilder.like(equipmentRoot.get("id_owner"), "%" + id_owner + "%"));
+        }
+        if (id_equipment != null){
+            predicate.add(criteriaBuilder.like(equipmentRoot.get("id_equipment"), "%" + id_equipment + "%"));
+        }
+        if (name_equipment != null){
+            predicate.add(criteriaBuilder.like(equipmentRoot.get("name_equipment"), "%" + name_equipment + "%"));
+        }
+        if (post != null){
+            predicate.add(criteriaBuilder.like(PostJoin.get("post"), "%" + post + "%"));
+        }
+
+        if (validity != null && environment != null && mainOwner != null && id_owner != null && id_equipment != null && name_equipment != null && post != null){
             return equipmentRepository.findAllByOperativeTrue(PageRequest.of(page, itens))
                     .stream()
                     .map(EquipmentDetailsDTO::new)
                     .collect(Collectors.toList());
         }
-        return filteredEquipments.stream()
+
+
+
+        criteriaQuery.where(criteriaBuilder.and(predicate.toArray(new Predicate[0])));
+
+
+
+        TypedQuery<Equipment> query = entityManager.createQuery((criteriaQuery));
+        return query.getResultList().stream()
                 .map(EquipmentDetailsDTO::new)
                 .collect(Collectors.toList());
     }
