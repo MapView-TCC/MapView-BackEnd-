@@ -1,6 +1,5 @@
 package com.MapView.BackEnd.controller;
 
-import com.MapView.BackEnd.repository.EquipmentRepository;
 import com.MapView.BackEnd.serviceImp.ReportServiceImp;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +10,11 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/excel")
-public class ReportRestController {
+public class ExcelController {
 
     private final ReportServiceImp reportServiceImp ;
 
-    public ReportRestController(ReportServiceImp reportServiceImp) {
+    public ExcelController(ReportServiceImp reportServiceImp) {
         this.reportServiceImp = reportServiceImp;
     }
 

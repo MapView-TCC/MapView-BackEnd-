@@ -24,7 +24,7 @@ public class EquipmentResponsible {
     @ManyToOne
     @JoinColumn(name = "id_equipment", nullable = false)
     @JsonBackReference
-    private Equipment id_equipment;
+    private Equipment idEquipment;
 
     @ManyToOne
     @JoinColumn(name = "id_responsible", nullable = false)
@@ -39,7 +39,7 @@ public class EquipmentResponsible {
 
     public EquipmentResponsible(EquipmentResponsibleCreateDTO equipmentResponsibleCreateDTO, Equipment equipment,
                                 Responsible responsible) {
-        this.id_equipment = equipment;
+        this.idEquipment = equipment;
         this.id_responsible = responsible;
         this.start_usage = equipmentResponsibleCreateDTO.start_usage();
         this.end_usage = null;

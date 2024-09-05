@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface EquipmentRepository extends JpaRepository<Equipment,String> {
     List<Equipment> findAllByOperativeTrue(Pageable pageable);
+    List<Equipment> findAllByOperativeTrue();
 
     Optional<Equipment> findByValidity(String validity);
     List<Equipment> findByModel(EnumModelEquipment equipment);
