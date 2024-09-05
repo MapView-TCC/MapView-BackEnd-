@@ -7,6 +7,7 @@ import com.MapView.BackEnd.serviceImp.EquipmentServiceImp;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Null;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,19 +46,22 @@ public class EquipmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EquipmentDetailsDTO>> getAllEquipment(@RequestParam int page, @RequestParam int itens, @RequestParam Long user_id){
+    public ResponseEntity<List<EquipmentDetailsDTO>> getAllEquipment(@RequestParam(required = false) int page , @RequestParam(required = false) int itens, @RequestParam Long user_id){
+        page=0;
+        itens =10 ;
         var list = equipmentServiceImp.getAllEquipment(page,itens, user_id);
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<EquipmentDetailsDTO>> getAllEquipmentFilter(@RequestParam int page, @RequestParam int itens, @RequestParam(required = false)  String validity,
+    public ResponseEntity<List<EquipmentDetailsDTO>> getAllEquipmentFilter(@RequestParam(required = false)int page, @RequestParam(required = false)int itens, @RequestParam(required = false)  String validity,
                                                                              @RequestParam(required = false)  String enviroment, @RequestParam(required = false)  String mainowner,
                                                                            @RequestParam(required = false) String id_owner, @RequestParam(required = false) String id_equipment,
                                                                            @RequestParam(required = false) String name_equipment, @RequestParam(required = false) String post){
 
         var list = equipmentServiceImp.getEquipmentValidation(page,itens, validity,enviroment,mainowner, id_owner, id_equipment,
                                                              name_equipment, post);
+
         return ResponseEntity.ok(list);
     }
 

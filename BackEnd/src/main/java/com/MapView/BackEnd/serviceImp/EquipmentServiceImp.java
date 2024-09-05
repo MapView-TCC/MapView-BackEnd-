@@ -203,70 +203,67 @@ public class EquipmentServiceImp implements EquipmentService {
     @Override
     public List<EquipmentDetailsDTO> getEquipmentValidation(int page, int itens, String validity,
                                                             String environment, String mainOwner,
-                                                            String id_owner, String id_equipment,
-                                                            String name_equipment, String post) {
-
+                                                            String idOwner, String idEquipment,
+                                                            String nameEquipment, String post) {
 
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Equipment> criteriaQuery = criteriaBuilder.createQuery(Equipment.class);
 
-
-
-        //Select From Equipment
+        // Select From Equipment
         Root<Equipment> equipmentRoot = criteriaQuery.from(Equipment.class);
-        Root<Post> postRoot = criteriaQuery.from(Post.class);
-        Root<Location> locationRootRoot = criteriaQuery.from(Location.class);
 
-        Join<Equipment,MainOwner> mainOwnerJoin = equipmentRoot.join("owner");
+        // Join with related entities
         Join<Equipment, Location> locationJoin = equipmentRoot.join("location");
-        Join<Equipment, Location> locationPostJoin = equipmentRoot.join("post");
-        Join<Location, Post> PostJoin = locationPostJoin.join("post");
+        Join<Location, Post> postJoin = locationJoin.join("post");
+        Join<Location, Enviroment   > environmentJoin = locationJoin.join("environment");
+        Join<Equipment, MainOwner> mainOwnerJoin = equipmentRoot.join("owner");
 
-        Join<Location, Enviroment> enviromentJoin = locationJoin.join("id_environment");
+        // List of predicates for the WHERE clause
+        List<Predicate> predicates = new ArrayList<>();
 
-
-        List<Predicate> predicate = new ArrayList<>();
-
-        //WHERE
-
-        if(validity != null){
-            predicate.add(criteriaBuilder.like(equipmentRoot.get("validity"), "%"+validity+"%"));
+        // WHERE clauses based on parameters
+        if (validity != null) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(equipmentRoot.get("validity")),
+                    "%" + validity.toLowerCase() + "%"));
         }
-        if (environment != null){
-            predicate.add(criteriaBuilder.like(enviromentJoin.get("id_location"), "%"+environment+"%"));
+        if (environment != null) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(environmentJoin.get("environment_name")),
+                    "%" + environment.toLowerCase() + "%"));
         }
-        if (mainOwner != null){
-            predicate.add(criteriaBuilder.like(mainOwnerJoin.get("owner_name"), "%" + mainOwner + "%"));
+        if (mainOwner != null) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(mainOwnerJoin.get("owner_name")),
+                    "%" + mainOwner.toLowerCase() + "%"));
         }
-        if(id_owner != null){
-            predicate.add(criteriaBuilder.like(equipmentRoot.get("id_owner"), "%" + id_owner + "%"));
+        if (idOwner != null) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(equipmentRoot.get("id_owner")),
+                    "%" + idOwner.toLowerCase() + "%"));
         }
-        if (id_equipment != null){
-            predicate.add(criteriaBuilder.like(equipmentRoot.get("id_equipment"), "%" + id_equipment + "%"));
+        if (idEquipment != null) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(equipmentRoot.get("id_equipment")),
+                    "%" + idEquipment.toLowerCase() + "%"));
         }
-        if (name_equipment != null){
-            predicate.add(criteriaBuilder.like(equipmentRoot.get("name_equipment"), "%" + name_equipment + "%"));
+        if (nameEquipment != null) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(equipmentRoot.get("name_equipment")),
+                    "%" + nameEquipment.toLowerCase() + "%"));
         }
-        if (post != null){
-            predicate.add(criteriaBuilder.like(PostJoin.get("post"), "%" + post + "%"));
-        }
-
-        if (validity != null && environment != null && mainOwner != null && id_owner != null && id_equipment != null && name_equipment != null && post != null){
-            return equipmentRepository.findAllByOperativeTrue(PageRequest.of(page, itens))
-                    .stream()
-                    .map(EquipmentDetailsDTO::new)
-                    .collect(Collectors.toList());
+        if (post != null) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(postJoin.get("post")),
+                    "%" + post.toLowerCase() + "%"));
         }
 
+        // Apply predicates to the query
+        criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
+        // Create a query and set pagination
+        TypedQuery<Equipment> query = entityManager.createQuery(criteriaQuery);
+        query.setFirstResult(page * itens);
+        query.setMaxResults(itens);
 
-        criteriaQuery.where(criteriaBuilder.and(predicate.toArray(new Predicate[0])));
+        List<Equipment> resultList = query.getResultList();
 
-
-
-        TypedQuery<Equipment> query = entityManager.createQuery((criteriaQuery));
-        return query.getResultList().stream()
+        // Convert results to DTOs
+        return resultList.stream()
                 .map(EquipmentDetailsDTO::new)
                 .collect(Collectors.toList());
     }
