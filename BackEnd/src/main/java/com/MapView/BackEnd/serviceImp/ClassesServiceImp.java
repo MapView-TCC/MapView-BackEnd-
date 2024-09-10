@@ -62,17 +62,20 @@ public class ClassesServiceImp implements ClassesService {
 
     @Override
     public ClassesDetaiLDTO updateClasses(Long classes_id ,ClassesUpdateDTO data, Long user_id) {
-        var usuario_log = userRepository.findById(user_id).orElseThrow(() -> new NotFoundException("User Id Not Found"));
         var classes = classesRepository.findById(data.user_id()).orElseThrow(() -> new NotFoundException("Class Id Not Found"));
 
         if(!classes.isOperative()){
             throw new OperativeFalseException("The inactive equipment cannot be updated.");
         }
 
+        var usuario_log = userRepository.findById(user_id).orElseThrow(() -> new NotFoundException("User Id Not Found"));
         var userlog = new UserLog(usuario_log,"Classes",classes_id.toString(),null,"Update Classes: ",EnumAction.UPDATE);
 
         if(data.user_id() != null){
             var user = userRepository.findById(data.user_id()).orElseThrow(() -> new NotFoundException("User Id Not Found"));
+            if (user.isOperative()){
+                throw new OperativeFalseException("The inactive user cannot be updated.");
+            }
             classes.setUser(user);
             userlog.setField("user_id");
             userlog.setDescription("user_id to: " + data.user_id());

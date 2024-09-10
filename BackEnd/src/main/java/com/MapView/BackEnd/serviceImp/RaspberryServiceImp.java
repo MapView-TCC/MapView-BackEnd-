@@ -100,7 +100,6 @@ public class RaspberryServiceImp implements RaspberryService {
             raspberry.setId_raspberry(dados.raspberry_name());
             userlog.setField("raspberry_name");
             userlog.setDescription("user_id to: " + dados.raspberry_name());
-
         }
 
         if (dados.id_building() != null){
@@ -130,24 +129,26 @@ public class RaspberryServiceImp implements RaspberryService {
         var raspberry = this.raspberryRepository.findById(id_Raspberry).orElseThrow(()->new NotFoundException("Id Enviroment Not Found"));
         if (!raspberry.isOperative()){
             raspberry.setOperative(true);
-            raspberryRepository.save(raspberry);
 
             var userLog = new UserLog(user,"Raspberry",id_Raspberry.toString(),"Operative","Activated Raspberry",EnumAction.UPDATE);
             userLogRepository.save(userLog);
+
+            raspberryRepository.save(raspberry);
         }
     }
 
     @Override
     public void inactivateRaspberry(String id_Raspberry, Long user_id) {
+
         var user = userRepository.findById(user_id).orElseThrow(()->new NotFoundException("Id Enviroment Not Found"));
         var raspberry = this.raspberryRepository.findById(id_Raspberry).orElseThrow(()->new NotFoundException("Id Enviroment Not Found"));;
         if (raspberry.isOperative()){
             raspberry.setOperative(false);
 
-            raspberryRepository.save(raspberry);
-
             var userLog = new UserLog(user,"Raspberry",id_Raspberry.toString(),"Operative","Inactivated Raspberry",EnumAction.UPDATE);
             userLogRepository.save(userLog);
+
+            raspberryRepository.save(raspberry);
         }
     }
 }

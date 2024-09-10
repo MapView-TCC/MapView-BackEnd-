@@ -42,7 +42,6 @@ public class MainOwnerServiceImp implements MainOwnerService {
     public MainOwnerDetailsDTO getMainOwner(String id_owner,Long user_id) {
         var mainOwner = this.mainOwnerRepository.findById(id_owner).orElseThrow(() -> new NotFoundException("Id not found"));
         Users user = this.userRepository.findById(user_id).orElseThrow(() -> new NotFoundException("Id not found"));
-
         if (!mainOwner.isOperative()){
             throw new NotFoundException("The inactive mainowner cannot be accessed.");
         }

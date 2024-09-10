@@ -71,7 +71,6 @@ public class AreaServiceImp implements AreaService {
     @Override
     public AreaDetailsDTO updateArea(Long id_area, AreaUpdateDTO dados,Long user_id) {
         var area = areaRepository.findById(id_area).orElseThrow(() -> new NotFoundException("Id not found"));
-
         if(!area.isOperative()){
             throw new OperativeFalseException("The inactive area cannot be updated.");
         }

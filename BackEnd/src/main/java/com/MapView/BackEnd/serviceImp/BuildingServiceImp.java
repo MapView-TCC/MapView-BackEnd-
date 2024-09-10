@@ -68,7 +68,6 @@ public class BuildingServiceImp implements BuildingService {
     @Override
     public BuildingDetailsDTO updateBuilding(Long building_id, BuildingUpdateDTO dados,Long user_id) {
         var building = buildingRepository.findById(building_id). orElseThrow(() -> new RuntimeException("Building Id not found"));
-
         if(!building.isOperative()){
             throw new OperativeFalseException("The inactive equipment cannot be updated.");
         }

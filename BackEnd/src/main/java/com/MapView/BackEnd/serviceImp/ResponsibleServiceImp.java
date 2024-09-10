@@ -60,14 +60,14 @@ public class ResponsibleServiceImp implements ResponsibleService {
 
     @Override
     public ResponsibleDetailsDTO getResposible(Long id_Resposible, Long user_id) {
-        Users user = this.userRepository.findById(user_id).orElseThrow(() -> new NotFoundException("Id not found"));
+
 
         var responsible = responsibleRepository.findById(id_Resposible).orElseThrow(() -> new NotFoundException("Responsible Id Not Found"));
-
         if (!responsible.isOperative()){
             throw new OperativeFalseException("The inactive responsible cannot be accessed.");
         }
 
+        Users user = this.userRepository.findById(user_id).orElseThrow(() -> new NotFoundException("Id not found"));
         var userLog = new UserLog(user, "Resposible", id_Resposible.toString(), "Read Resposible", EnumAction.READ);
         userLogRepository.save(userLog);
 
@@ -87,27 +87,38 @@ public class ResponsibleServiceImp implements ResponsibleService {
     @Override
     public ResponsibleDetailsDTO updateResposible(Long id_responsible, ResponsibleUpdateDTO data, Long user_id ) {
         var responsible = responsibleRepository.findById(id_responsible).orElseThrow(() -> new NotFoundException("Responsible Id Not Found"));
-        var userEntity = userRepository.findById(data.id_user()).orElseThrow(() -> new NotFoundException("Responsible Id Not Found"));
-        var classeEntity = classesRepository.findById(data.id_classes()).orElseThrow(() -> new NotFoundException("Responsible Id Not Found"));
+        if(responsible.isOperative()){
+            throw new OperativeFalseException("The inactive classes cannot be accessed.");
+        }
 
-        Users user = this.userRepository.findById(user_id).orElseThrow(() -> new NotFoundException("Id not found"));
-
-        var userlog = new UserLog(user,"Resposible", id_responsible.toString(),null,"Infos update",EnumAction.UPDATE);
+        Users userLog = this.userRepository.findById(user_id).orElseThrow(() -> new NotFoundException("Id not found"));
+        var userlog = new UserLog(userLog,"Resposible", id_responsible.toString(),null,"Infos update",EnumAction.UPDATE);
 
         if(data.responsible_name() != null){
             responsible.setResponsible_name(data.responsible_name());
             userlog.setField("Responsible name to: " + data.responsible_name());
         }
+
         if(data.edv() != null){
             responsible.setEdv(data.edv());
             userlog.setField(userlog.getField() + " ," + "Responsible edv to: " + data.edv());
         }
+
         if(data.id_classes() != null){
+            var classeEntity = classesRepository.findById(data.id_classes()).orElseThrow(() -> new NotFoundException("Responsible Id Not Found"));
+            if(classeEntity.isOperative()){
+                throw new OperativeFalseException("The inactive classes cannot be accessed.");
+            }
             responsible.setClasses(classeEntity);
             userlog.setField(userlog.getField() + " ," + "Responsible id classes to: " + data.id_classes());
         }
+
         if(data.id_user() != null){
-            responsible.setUser(userEntity);
+            var user = userRepository.findById(data.id_user()).orElseThrow(() -> new NotFoundException("User Id Not Found"));
+            if (user.isOperative()){
+                throw new OperativeFalseException("The inactive classes cannot be accessed.");
+            }
+            responsible.setUser(user);
             userlog.setField(userlog.getField() + " ," + "Responsible id user to: " + data.id_user());
         }
 
@@ -135,11 +146,9 @@ public class ResponsibleServiceImp implements ResponsibleService {
     public void inactivateResposible(Long id_resposible, Long user_id) {
         Users user = this.userRepository.findById(user_id).orElseThrow(() -> new NotFoundException("Id not found"));
 
-        var responsibleClass = responsibleRepository.findById(id_resposible);
-        if (responsibleClass.isPresent()){
-            var responsible = responsibleClass.get();
-            responsible.setOperative(false);
-        }
+        var responsibleClass = responsibleRepository.findById(id_resposible).orElseThrow(()-> new NotFoundException("Responsible id not found"));
+        responsibleClass.setOperative(false);
+        responsibleRepository.save(responsibleClass);
 
         var userLog = new UserLog(user, "Resposible", id_resposible.toString(), "Operative", "Inactivated Resposible", EnumAction.UPDATE);
         userLogRepository.save(userLog);

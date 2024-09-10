@@ -99,9 +99,6 @@ public class CostCenterServiceImp implements CostCenterService {
 
         var userLog = new UserLog(user,"CostCenter",id_cost_center.toString(),"Operative","Inactivated Cost Center",EnumAction.UPDATE);
         userLogRepository.save(userLog);
-
-
-
     }
 
     @Override

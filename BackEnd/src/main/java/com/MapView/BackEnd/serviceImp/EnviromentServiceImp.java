@@ -74,13 +74,12 @@ public class EnviromentServiceImp implements EnviromentService {
     @Override
     public EnviromentDetailsDTO updateEnviroment(Long enviroment_id,EnviromentUpdateDTO data, Long user_id) {
         var user = userRepository.findById(user_id).orElseThrow(()->new NotFoundException("Id Enviroment Not Found"));
-        var enviroment = enviromentRepository.findById(enviroment_id).orElseThrow(()->new NotFoundException("Id Enviroment Not Found"));
 
+        var enviroment = enviromentRepository.findById(enviroment_id).orElseThrow(()->new NotFoundException("Id Enviroment Not Found"));
         if(!enviroment.isOperative()){
             throw new OperativeFalseException("The inactive enviroment cannot be updated.");
         }
 
-        var rasp = raspberryRepository.findById(data.id_raspberry()).orElseThrow(()->new NotFoundException("Id Raspberry Not Found"));
         var userlog = new UserLog(user,"Enviroment",enviroment_id.toString(),null,"Update Enviroment: ",EnumAction.UPDATE);
 
         if (data.environment_name() != null){
@@ -89,6 +88,10 @@ public class EnviromentServiceImp implements EnviromentService {
             userlog.setDescription("enviroment_name to: " + data.environment_name());
         }
         if (data.id_raspberry() != null){
+            var rasp = raspberryRepository.findById(data.id_raspberry()).orElseThrow(()->new NotFoundException("Id Raspberry Not Found"));
+            if(rasp.isOperative()){
+                throw new OperativeFalseException("The inactive raspberry cannot be updated.");
+            }
             enviroment.setRaspberry(rasp);
             userlog.setField("id_raspberry");
             userlog.setDescription("id_raspberry to: ");
