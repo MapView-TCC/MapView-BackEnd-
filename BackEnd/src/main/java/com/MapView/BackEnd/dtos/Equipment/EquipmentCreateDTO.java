@@ -12,7 +12,6 @@ public record EquipmentCreateDTO(
         Long rfid,
         @NotBlank(message = "Type cannot be blank")
         String type,
-        @NotBlank(message = "Type cannot be blank")
         EnumModelEquipment model,
         String validity,
         String admin_rights,

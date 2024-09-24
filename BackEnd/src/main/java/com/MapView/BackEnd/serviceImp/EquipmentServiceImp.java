@@ -3,7 +3,9 @@ package com.MapView.BackEnd.serviceImp;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentUpdateDTO;
 import com.MapView.BackEnd.entities.*;
 import com.MapView.BackEnd.enums.EnumAction;
+import com.MapView.BackEnd.enums.EnumColors;
 import com.MapView.BackEnd.enums.EnumModelEquipment;
+import com.MapView.BackEnd.enums.EnumTrackingAction;
 import com.MapView.BackEnd.infra.BlankErrorException;
 import com.MapView.BackEnd.infra.NotFoundException;
 import com.MapView.BackEnd.infra.OperativeFalseException;
@@ -40,10 +42,11 @@ public class EquipmentServiceImp implements EquipmentService {
     private final UserLogRepository userLogRepository;
     private final UserRepository userRepository;
     private final Path fileStorageLocation;
+    private final TrackingHistoryRepository trackingHistoryRepository;
 
 
     public EquipmentServiceImp(EntityManager entityManager, EquipmentRepository equipmentRepository, LocationRepository locationRepository, MainOwnerRepository mainOwnerRepository,
-                               UserLogRepository userLogRepository, UserRepository userRepository, FileStorageProperties fileStorageProperties) {
+                               UserLogRepository userLogRepository, UserRepository userRepository, FileStorageProperties fileStorageProperties, TrackingHistoryRepository trackingHistoryRepository) {
         this.entityManager = entityManager;
         this.equipmentRepository = equipmentRepository;
         this.locationRepository = locationRepository;
@@ -51,6 +54,7 @@ public class EquipmentServiceImp implements EquipmentService {
         this.userLogRepository = userLogRepository;
         this.userRepository = userRepository;
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
+        this.trackingHistoryRepository = trackingHistoryRepository;
     }
 
 
@@ -80,28 +84,44 @@ public class EquipmentServiceImp implements EquipmentService {
 
     @Override
     public EquipmentDetailsDTO createEquipment(EquipmentCreateDTO data, Long userLog_id) {
-        Users users = this.userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("Id not found!"));
+        Users users = this.userRepository.findById(userLog_id)
+                .orElseThrow(() -> new NotFoundException("Id not found!"));
 
-        // location
+        // Localização
         Location location = locationRepository.findById(Long.valueOf(data.id_location()))
                 .orElseThrow(() -> new RuntimeException("Id location Não encontrado!"));
 
-
-        // main owner
+        // Proprietário principal
         MainOwner mainOwner = mainOwnerRepository.findById(String.valueOf(data.id_owner()))
                 .orElseThrow(() -> new RuntimeException("Id main owner Não encontrado"));
 
-        if(!mainOwner.isOperative()){
+        if (!mainOwner.isOperative()) {
             throw new OperativeFalseException("The inactive mainowner cannot be accessed.");
         }
 
+        System.out.println(data.name_equipment());
 
-        Equipment equipment = new Equipment(data,location,mainOwner);
-        equipmentRepository.save(equipment);
+        // Cria o equipamento
+        Equipment equipment = new Equipment(data, location, mainOwner);
 
-        var userLog = new UserLog(users,"Equipment", data.id_equipment(), "Create new Equipment", EnumAction.CREATE);
+        // Usa merge em vez de save
+        equipment = entityManager.merge(equipment);
+        //equipmentRepository.save(equipment);
+
+        var userLog = new UserLog(users, "Equipment", data.id_equipment(), "Create new Equipment", EnumAction.CREATE);
         userLogRepository.save(userLog);
 
+        // Salvar o tracking history
+        Enviroment enviroment = location.getEnvironment();
+
+        TrackingHistory trackingHistory = new TrackingHistory(
+                equipment, enviroment, equipment.getRfid(), EnumTrackingAction.ENTER,
+                EnumColors.GREEN
+        );
+
+        trackingHistoryRepository.save(trackingHistory);
+
+        System.out.println(new EquipmentDetailsDTO(equipment));
         return new EquipmentDetailsDTO(equipment);
     }
 

@@ -31,11 +31,18 @@ public class Equipment {
     private String validity; // periodo de utilização, quando tem que ser devolvido
     private String admin_rights; // codigo que eles tem para fazer as requisições
     private String observation;
+
+    //@ManyToOne
     @OneToOne
     @JoinColumn(name = "id_location")
+    //@JsonBackReference
     private Location location;
+
+
+    //@ManyToOne
     @OneToOne
     @JoinColumn(name = "id_owner")
+    //@JsonBackReference // it will be omitted from serialization.
     private MainOwner owner;
 
     private String image;
@@ -48,7 +55,7 @@ public class Equipment {
 
     public Equipment(EquipmentCreateDTO data, Location location, MainOwner id_owner) {
         this.id_equipment = data.id_equipment();
-        this.name_equipment = getName_equipment();
+        this.name_equipment = data.name_equipment();
         this.rfid = data.rfid();
         this.type = data.type();
         this.model = data.model();

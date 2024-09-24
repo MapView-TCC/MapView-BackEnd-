@@ -2,8 +2,12 @@ package com.MapView.BackEnd.entities;
 
 import com.MapView.BackEnd.dtos.MainOwner.MainOwnerCreateDTO;
 import com.MapView.BackEnd.dtos.MainOwner.MainOwnerDetailsDTO;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Table(name = "main_owner")
 @Entity(name = "main_owner")
@@ -19,6 +23,10 @@ public class MainOwner {
     @JoinColumn(name = "id_cost_center")
     private CostCenter costCenter;
     private boolean operative;
+
+//    @OneToMany(mappedBy = "owner") // Mapeia a relação inversa no Equipment
+//    @JsonManagedReference
+//    private Set<Equipment> equipments = new HashSet<>();
 
 
     public MainOwner(MainOwnerCreateDTO dados, CostCenter costCenter) {

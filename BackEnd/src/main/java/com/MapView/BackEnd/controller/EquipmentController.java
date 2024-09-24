@@ -44,6 +44,7 @@ public class EquipmentController {
             UriComponentsBuilder uriBuilder,
             @Parameter(description = "User log ID for tracking changes", required = true)
             @RequestParam Long userLog_id) {
+
         var equipment = equipmentServiceImp.createEquipment(dados, userLog_id);
         var uri = uriBuilder.path("/api/v1/equipment/{id}").buildAndExpand(equipment.id_equipment()).toUri();
         return ResponseEntity.created(uri).body(new EquipmentDetailsDTO(

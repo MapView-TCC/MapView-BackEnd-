@@ -60,4 +60,15 @@ public class TrackingHistory {
         this.action = action;
         this.warning = warning;
     }
+
+    // para salvar um tracking history quando salvar um equipment
+    public TrackingHistory(Equipment equipment, Enviroment environment, Long rfid, EnumTrackingAction action, EnumColors warning) {
+        this.datetime = Instant.now();
+        this.equipment = equipment;
+        this.environment = environment;
+        this.rfid = rfid;
+        this.action = action;
+        this.warning = warning;
+    }
+
 }
