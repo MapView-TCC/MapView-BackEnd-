@@ -1,5 +1,6 @@
 package com.MapView.BackEnd.controller;
 
+import com.MapView.BackEnd.dtos.Equipment.EquipmentDetailsDTO;
 import com.MapView.BackEnd.enums.EnumColors;
 import com.MapView.BackEnd.enums.EnumTrackingAction;
 import com.MapView.BackEnd.serviceImp.TrackingHistoryServiceImp;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/trackingHistory")
-@Tag(name = "Tracking History", description = "Operations related to tracking history management")
+@Tag(name = "Tracking Historic", description = "Operations related to tracking history management")
 public class TrackingHistoryController {
 
     private final TrackingHistoryServiceImp trackingHistoryServiceImp;
@@ -100,5 +101,12 @@ public class TrackingHistoryController {
             @RequestParam(required = false) String id_equipment) {
         var list = trackingHistoryServiceImp.FilterTracking(page, itens, action, day, month, year, colors, id_equipment);
         return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/wronglocations")
+    public ResponseEntity<List<EquipmentDetailsDTO>> getWrongLocationEquipment(@RequestParam("id_enviromet") Long id_enviroment){
+        List<EquipmentDetailsDTO> equipment =  trackingHistoryServiceImp.findWrongLocationEquipments(id_enviroment);
+        return ResponseEntity.ok(equipment);
+
     }
 }

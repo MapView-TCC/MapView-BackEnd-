@@ -1,9 +1,12 @@
 package com.MapView.BackEnd.serviceImp;
 
+import com.MapView.BackEnd.dtos.Equipment.EquipmentDetailsDTO;
+import com.MapView.BackEnd.entities.Location;
 import com.MapView.BackEnd.enums.EnumColors;
 import com.MapView.BackEnd.enums.EnumTrackingAction;
 import com.MapView.BackEnd.repository.EnviromentRepository;
 import com.MapView.BackEnd.repository.EquipmentRepository;
+import com.MapView.BackEnd.repository.LocationRepository;
 import com.MapView.BackEnd.repository.TrackingHistoryRepository;
 import com.MapView.BackEnd.service.TrackingHistoryService;
 import com.MapView.BackEnd.dtos.TrackingHistory.TrackingHistoryCreateDTO;
@@ -27,13 +30,15 @@ public class TrackingHistoryServiceImp implements TrackingHistoryService {
     private final TrackingHistoryRepository trackingHistoryRepository;
     private final EnviromentRepository enviromentRepository;
     private final EquipmentRepository equipmentRepository;
+    private final LocationRepository locationRepository;
 
 
-    public TrackingHistoryServiceImp(TrackingHistoryRepository trackingHistoryRepository, EnviromentRepository enviromentRepository, EquipmentRepository equipmentRepository) {
+    public TrackingHistoryServiceImp(TrackingHistoryRepository trackingHistoryRepository, EnviromentRepository enviromentRepository, EquipmentRepository equipmentRepository, LocationRepository locationRepository) {
         this.trackingHistoryRepository = trackingHistoryRepository;
         this.enviromentRepository = enviromentRepository;
         this.equipmentRepository = equipmentRepository;
 
+        this.locationRepository = locationRepository;
     }
 
     @Override
@@ -137,6 +142,27 @@ public class TrackingHistoryServiceImp implements TrackingHistoryService {
         // Converte para DTO
         return filterTracking.stream()
                 .map(TrackingHistoryDetailsDTO::new)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<EquipmentDetailsDTO> findWrongLocationEquipments (Long id_enviroment){
+        Enviroment enviroment = enviromentRepository.findById(id_enviroment).orElseThrow(() -> new NotFoundException("Enviroment not found"));
+
+        List<TrackingHistory> trackingHistory = trackingHistoryRepository.findByEnvironment(enviroment);
+        List<Equipment> wrongLocationEquipments  = new ArrayList<>();
+
+        for (TrackingHistory track :trackingHistory) {
+            String id_equipment = track.getEquipment().getId_equipment();
+            Equipment equipment = equipmentRepository.findById(id_equipment).orElseThrow(() -> new NotFoundException("Enviroment not found"));
+
+            if (equipment.getLocation().getEnvironment().getId_environment() != enviroment.getId_environment()) {
+                wrongLocationEquipments .add(equipment);
+            }
+        }
+
+
+        return wrongLocationEquipments .stream()
+                .map(EquipmentDetailsDTO::new)
                 .collect(Collectors.toList());
     }
 }
