@@ -2,6 +2,7 @@ package com.MapView.BackEnd.serviceImp;
 
 import com.MapView.BackEnd.dtos.Equipment.EquipmentDetailsDTO;
 import com.MapView.BackEnd.entities.Location;
+import com.MapView.BackEnd.enums.EnumAction;
 import com.MapView.BackEnd.enums.EnumColors;
 import com.MapView.BackEnd.enums.EnumTrackingAction;
 import com.MapView.BackEnd.repository.EnviromentRepository;
@@ -156,11 +157,11 @@ public class TrackingHistoryServiceImp implements TrackingHistoryService {
             Equipment equipment = equipmentRepository.findById(id_equipment).orElseThrow(() -> new NotFoundException("Enviroment not found"));
 
             if (equipment.getLocation().getEnvironment().getId_environment() != enviroment.getId_environment()) {
-                wrongLocationEquipments .add(equipment);
+                if(track.getAction() == EnumTrackingAction.ENTER){
+                    wrongLocationEquipments.add(equipment);
+                }
             }
         }
-
-
         return wrongLocationEquipments .stream()
                 .map(EquipmentDetailsDTO::new)
                 .collect(Collectors.toList());
