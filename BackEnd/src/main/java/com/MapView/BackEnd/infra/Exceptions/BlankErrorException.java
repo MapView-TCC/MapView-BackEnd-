@@ -1,4 +1,4 @@
-package com.MapView.BackEnd.infra;
+package com.MapView.BackEnd.infra.Exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

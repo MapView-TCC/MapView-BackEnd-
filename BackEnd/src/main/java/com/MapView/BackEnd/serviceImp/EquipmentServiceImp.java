@@ -1,16 +1,15 @@
 package com.MapView.BackEnd.serviceImp;
 
 import com.MapView.BackEnd.dtos.Equipment.EquipmentUpdateDTO;
-import com.MapView.BackEnd.dtos.ImageUpload.UploadCreateDTO;
 import com.MapView.BackEnd.entities.*;
 import com.MapView.BackEnd.enums.EnumAction;
 import com.MapView.BackEnd.enums.EnumColors;
 import com.MapView.BackEnd.enums.EnumModelEquipment;
 import com.MapView.BackEnd.enums.EnumTrackingAction;
-import com.MapView.BackEnd.infra.BlankErrorException;
-import com.MapView.BackEnd.infra.NotFoundException;
-import com.MapView.BackEnd.infra.OperativeFalseException;
-import com.MapView.BackEnd.infra.OpetativeTrueException;
+import com.MapView.BackEnd.infra.Exceptions.BlankErrorException;
+import com.MapView.BackEnd.infra.Exceptions.NotFoundException;
+import com.MapView.BackEnd.infra.Exceptions.OperativeFalseException;
+import com.MapView.BackEnd.infra.Exceptions.OpetativeTrueException;
 import com.MapView.BackEnd.repository.*;
 import com.MapView.BackEnd.service.EquipmentService;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentCreateDTO;

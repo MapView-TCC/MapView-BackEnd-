@@ -1,4 +1,4 @@
-package com.MapView.BackEnd.infra;
+package com.MapView.BackEnd.infra.Exceptions;
 
 public class StorageFileNotFoundException extends StorageException{
     public StorageFileNotFoundException(String message) {

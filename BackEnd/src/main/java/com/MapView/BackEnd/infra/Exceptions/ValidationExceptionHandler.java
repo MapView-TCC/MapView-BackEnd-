@@ -1,4 +1,4 @@
-package com.MapView.BackEnd.infra;
+package com.MapView.BackEnd.infra.Exceptions;
 
 
 import jakarta.validation.ValidationException;

@@ -6,10 +6,9 @@ import com.MapView.BackEnd.repository.UserRepository;
 import com.MapView.BackEnd.service.UserService;
 import com.MapView.BackEnd.entities.Users;
 import com.MapView.BackEnd.enums.RoleUser;
-import com.MapView.BackEnd.infra.NotFoundException;
+import com.MapView.BackEnd.infra.Exceptions.NotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 @Service

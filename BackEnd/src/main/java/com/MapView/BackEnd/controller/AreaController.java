@@ -1,7 +1,7 @@
 package com.MapView.BackEnd.controller;
 
 import com.MapView.BackEnd.entities.Area;
-import com.MapView.BackEnd.infra.ValidationExceptionHandler;
+import com.MapView.BackEnd.infra.Exceptions.ValidationExceptionHandler;
 import com.MapView.BackEnd.serviceImp.AreaServiceImp;
 import com.MapView.BackEnd.dtos.Area.AreaCreateDTO;
 import com.MapView.BackEnd.dtos.Area.AreaDetailsDTO;

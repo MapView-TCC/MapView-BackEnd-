@@ -1,6 +1,6 @@
 package com.MapView.BackEnd.serviceImp;
 
-import com.MapView.BackEnd.infra.OperativeFalseException;
+import com.MapView.BackEnd.infra.Exceptions.OperativeFalseException;
 import com.MapView.BackEnd.repository.EnviromentRepository;
 import com.MapView.BackEnd.repository.LocationRepository;
 import com.MapView.BackEnd.repository.PostRepository;
@@ -9,10 +9,9 @@ import com.MapView.BackEnd.dtos.Location.LocationCreateDTO;
 import com.MapView.BackEnd.dtos.Location.LocationDetalsDTO;
 import com.MapView.BackEnd.dtos.Location.LocationUpdateDTO;
 import com.MapView.BackEnd.entities.Location;
-import com.MapView.BackEnd.infra.NotFoundException;
+import com.MapView.BackEnd.infra.Exceptions.NotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 

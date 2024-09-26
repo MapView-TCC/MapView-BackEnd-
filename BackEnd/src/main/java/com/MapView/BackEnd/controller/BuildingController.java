@@ -4,7 +4,7 @@ import com.MapView.BackEnd.dtos.Building.BuildingCreateDTO;
 import com.MapView.BackEnd.dtos.Building.BuildingDetailsDTO;
 import com.MapView.BackEnd.dtos.Building.BuildingUpdateDTO;
 import com.MapView.BackEnd.entities.Building;
-import com.MapView.BackEnd.infra.ValidationExceptionHandler;
+import com.MapView.BackEnd.infra.Exceptions.ValidationExceptionHandler;
 import com.MapView.BackEnd.serviceImp.BuildingServiceImp;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;

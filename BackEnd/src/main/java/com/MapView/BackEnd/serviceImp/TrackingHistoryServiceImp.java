@@ -1,7 +1,6 @@
 package com.MapView.BackEnd.serviceImp;
 
 import com.MapView.BackEnd.dtos.Equipment.EquipmentDetailsDTO;
-import com.MapView.BackEnd.entities.Location;
 import com.MapView.BackEnd.enums.EnumColors;
 import com.MapView.BackEnd.enums.EnumTrackingAction;
 import com.MapView.BackEnd.repository.EnviromentRepository;
@@ -14,7 +13,7 @@ import com.MapView.BackEnd.dtos.TrackingHistory.TrackingHistoryDetailsDTO;
 import com.MapView.BackEnd.entities.Enviroment;
 import com.MapView.BackEnd.entities.Equipment;
 import com.MapView.BackEnd.entities.TrackingHistory;
-import com.MapView.BackEnd.infra.NotFoundException;
+import com.MapView.BackEnd.infra.Exceptions.NotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
