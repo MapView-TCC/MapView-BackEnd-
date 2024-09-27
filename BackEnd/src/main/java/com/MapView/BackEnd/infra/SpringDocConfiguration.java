@@ -1,4 +1,4 @@
-package com.MapView.BackEnd;
+package com.MapView.BackEnd.infra;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

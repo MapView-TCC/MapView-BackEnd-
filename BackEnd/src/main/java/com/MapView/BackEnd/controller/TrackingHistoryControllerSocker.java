@@ -19,6 +19,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -106,10 +107,12 @@ public class TrackingHistoryControllerSocker {
     }
 
     @MessageMapping("/wronglocations")
-    @SendTo("/topic/equipment")
+    @SendTo("/topic/equip")
     public ResponseEntity<List<EquipmentDetailsDTO>> getWrongLocationEquipment(@RequestParam("id_enviromet") Long id_enviroment){
         List<EquipmentDetailsDTO> equipment =  trackingHistoryServiceImp.findWrongLocationEquipments(id_enviroment);
         return ResponseEntity.ok(equipment);
 
     }
+
+
 }
