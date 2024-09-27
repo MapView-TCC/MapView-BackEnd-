@@ -7,6 +7,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
+import org.springframework.web.socket.sockjs.transport.handler.WebSocketTransportHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -20,8 +21,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/connect").setAllowedOrigins("http://localhost:3001").withSockJS().setInterceptors(new HttpSessionHandshakeInterceptor());
-        registry.addEndpoint("/connect");
+        registry.addEndpoint("/connect").setAllowedOrigins("*").withSockJS();
 
     }
 }

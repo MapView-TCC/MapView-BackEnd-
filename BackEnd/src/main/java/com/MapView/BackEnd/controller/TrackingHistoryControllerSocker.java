@@ -13,9 +13,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -28,6 +31,8 @@ import java.util.List;
 public class TrackingHistoryControllerSocker {
 
     private final TrackingHistoryServiceImp trackingHistoryServiceImp;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     public TrackingHistoryControllerSocker(TrackingHistoryServiceImp trackingHistoryServiceImp) {
         this.trackingHistoryServiceImp = trackingHistoryServiceImp;
@@ -45,6 +50,8 @@ public class TrackingHistoryControllerSocker {
             @Parameter(description = "Data transfer object for creating a new tracking history", required = true)
             @RequestBody @Valid TrackingHistoryCreateDTO dados,
             UriComponentsBuilder uriBuilder) {
+
+        simpMessagingTemplate.convertAndSend("/topic/equip/messages", "Teste de requisição");
         var tracking = trackingHistoryServiceImp.createTrackingHistory(dados);
 
         var uri = uriBuilder.path("/api/v1/trackingHistory/{id}").buildAndExpand(tracking.id_tracking()).toUri();
@@ -108,6 +115,7 @@ public class TrackingHistoryControllerSocker {
 
     @MessageMapping("/wronglocations")
     @SendTo("/topic/equip")
+    @Operation(summary = "Verifica locais errados dos equipamentos", description = "Envia o ID do ambiente para verificar equipamentos em localizações erradas.")
     public ResponseEntity<List<EquipmentDetailsDTO>> getWrongLocationEquipment(@RequestParam("id_enviromet") Long id_enviroment){
         List<EquipmentDetailsDTO> equipment =  trackingHistoryServiceImp.findWrongLocationEquipments(id_enviroment);
         return ResponseEntity.ok(equipment);
