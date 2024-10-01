@@ -21,7 +21,9 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/connect").setAllowedOrigins("*").withSockJS();
+        registry.addEndpoint("/connect").setAllowedOrigins("http://localhost:3001").withSockJS().setInterceptors(new HttpSessionHandshakeInterceptor());
+        registry.addEndpoint("/connect");
+
 
     }
 }
