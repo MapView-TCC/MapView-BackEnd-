@@ -3,6 +3,7 @@ package com.MapView.BackEnd.controller;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentCreateDTO;
 import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleCreateDTO;
 import com.MapView.BackEnd.dtos.Location.LocationCreateDTO;
+import com.MapView.BackEnd.dtos.Register.RegisterCreateDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterDetailsDTO;
 import com.MapView.BackEnd.serviceImp.RegisterServiceImp;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,12 +44,8 @@ public class RegisterController {
     )
     @PostMapping
     @Transactional
-    public ResponseEntity<RegisterDetailsDTO> register(@RequestBody @Valid EquipmentCreateDTO dataEquipment,
-                                                       @RequestBody @Valid LocationCreateDTO dataLocation,
-                                                       @RequestBody @Valid EquipmentResponsibleCreateDTO dataResposible,
-                                                       @RequestParam Long userLog_id){
-        
-        RegisterDetailsDTO  register = registerServiceImp.register(dataEquipment,dataLocation,dataResposible,userLog_id);
+    public ResponseEntity<RegisterDetailsDTO> register(@RequestBody @Valid RegisterCreateDTO dataRegister, @RequestParam Long userLog_id){
+        RegisterDetailsDTO  register = registerServiceImp.register(dataRegister,userLog_id);
         return ResponseEntity.ok(register);
 
     }

@@ -3,7 +3,9 @@ package com.MapView.BackEnd.serviceImp;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentCreateDTO;
 import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleCreateDTO;
 import com.MapView.BackEnd.dtos.Location.LocationCreateDTO;
+import com.MapView.BackEnd.dtos.Register.RegisterCreateDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterDetailsDTO;
+import com.MapView.BackEnd.dtos.Responsible.ResponsibleCrateDTO;
 import com.MapView.BackEnd.entities.*;
 import com.MapView.BackEnd.enums.EnumAction;
 import com.MapView.BackEnd.infra.NotFoundException;
@@ -13,6 +15,8 @@ import com.MapView.BackEnd.service.RegisterService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 
@@ -42,43 +46,54 @@ public class RegisterServiceImp implements RegisterService {
 
 
     @Override
-    public RegisterDetailsDTO register(EquipmentCreateDTO dataEquipment, LocationCreateDTO datalocation, EquipmentResponsibleCreateDTO dataResponsible,Long userLog_id) {
+    public RegisterDetailsDTO register(RegisterCreateDTO dataRegister,Long userLog_id) {
         Users user = userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("This uses is incorrect"));
 
+
+
         // location
-        Location locationEquip = locationRepository.findById(Long.valueOf(dataEquipment.id_location()))
+        Location locationEquip = locationRepository.findById(dataRegister.dataEquipment().id_location())
                 .orElseThrow(() -> new RuntimeException("Id location Não encontrado!"));
 
         // main owner
-        MainOwner mainOwner = mainOwnerRepository.findById(String.valueOf(dataEquipment.id_owner()))
+        MainOwner mainOwner = mainOwnerRepository.findById(String.valueOf(dataRegister.dataEquipment().id_owner()))
                 .orElseThrow(() -> new RuntimeException("Id main owner Não encontrado"));
 
         if(!mainOwner.isOperative()){
             throw new OperativeFalseException("The inactive mainowner cannot be accessed.");
         }
 
-        var post = postRepository.findById(datalocation.id_post()).orElseThrow(() -> new NotFoundException("Post Id not Found"));
+        var post = postRepository.findById(dataRegister.dataLocation().id_post()).orElseThrow(() -> new NotFoundException("Post Id not Found"));
         if(!post.isOperative()){
             throw new OperativeFalseException("The inactive post cannot be accessed.");
         }
 
-        var enviroment = enviromentRepository.findById(datalocation.id_eviroment()).orElseThrow(() -> new NotFoundException("Enviroment Id Not Found"));
+        var enviroment = enviromentRepository.findById(dataRegister.dataLocation().id_eviroment()).orElseThrow(() -> new NotFoundException("Enviroment Id Not Found"));
         if(!enviroment.isOperative()){
             throw new OperativeFalseException("The inactive enviroment cannot be accessed.");
         }
 
-        Responsible responsible = responsibleRepository.findById(dataResponsible.id_responsible())
-                .orElseThrow(() -> new NotFoundException("Responsible id not found"));
 
-        LocalDate stringToDate = getStartDateFromQuarter(dataEquipment.validity());
 
-        Equipment equipment = equipmentRepository.save(new Equipment(dataEquipment,stringToDate,locationEquip,mainOwner));
+
+
+        LocalDate stringToDate = getStartDateFromQuarter(dataRegister.dataEquipment().validity());
+
+        Equipment equipment = equipmentRepository.save(new Equipment(dataRegister.dataEquipment(),stringToDate,locationEquip,mainOwner));
         UserlogCreate(user,"Equipment",equipment.getIdEquipment(),"Create new Equipment");
 
         Location location = locationRepository.save(new Location(post,enviroment));
         UserlogCreate(user,"Location",location.getId_location().toString(),"Create new Location");
 
-        EquipmentResponsible equipmentResponsible = equipmentResponsibleRepository.save(new EquipmentResponsible(dataResponsible, equipment, responsible));
+        for (Responsible r: dataRegister.dataResposible()) {
+
+            Optional<Responsible> create = responsibleRepository.findByEdv(r.edv());
+            if (create.isEmpty()){
+
+                new EquipmentResponsible(dataRegister.dataResposible(),equipment,responsibleRepository.save(r));
+            }
+        }
+        EquipmentResponsible equipmentResponsible = equipmentResponsibleRepository.save(new EquipmentResponsible(dataRegister.dataResposible(), equipment, responsible));
         UserlogCreate(user,"EquipmentResponsible",equipmentResponsible.getId_equip_resp().toString(),"Create new EquipmentResponsible");
 
         return new RegisterDetailsDTO(equipment,location,equipmentResponsible);

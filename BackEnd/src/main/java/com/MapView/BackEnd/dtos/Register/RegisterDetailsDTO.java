@@ -5,6 +5,7 @@ import com.MapView.BackEnd.enums.EnumModelEquipment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record RegisterDetailsDTO (String id_equipment,
                                   String name_equipment,
@@ -21,7 +22,7 @@ public record RegisterDetailsDTO (String id_equipment,
                                   Enviroment enviroment,
                                   Long id_equip_resp,
                                   Equipment equipment,
-                                  Responsible responsible,
+                                  List<Responsible> responsible,
                                   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
                                   LocalDate start_usage,
                                   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
