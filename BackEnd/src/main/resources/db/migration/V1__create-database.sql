@@ -86,7 +86,6 @@ CREATE TABLE IF NOT EXISTS cost_center (
 -- Creating the Main Owner table (dono principal)
 CREATE TABLE IF NOT EXISTS main_owner (
     id_owner VARCHAR(255) PRIMARY KEY,
-    owner_name VARCHAR(255) NOT NULL,
     id_cost_center INT NOT NULL,
     operative TINYINT NOT NULL,
     FOREIGN KEY(id_cost_center) REFERENCES cost_center(id_cost_center)

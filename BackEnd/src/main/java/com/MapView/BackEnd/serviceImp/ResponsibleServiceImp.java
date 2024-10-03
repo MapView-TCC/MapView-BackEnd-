@@ -61,7 +61,7 @@ public class ResponsibleServiceImp implements ResponsibleService {
     }
 
     @Override
-    public ResponsibleDetailsDTO getResposible(Long id_Resposible, Long userLog_id) {
+    public ResponsibleDetailsDTO getResposibleById(Long id_Resposible, Long userLog_id) {
 
 
         var responsible = responsibleRepository.findById(id_Resposible).orElseThrow(() -> new NotFoundException("Responsible Id Not Found"));
@@ -71,6 +71,21 @@ public class ResponsibleServiceImp implements ResponsibleService {
 
         Users user = this.userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("Id not found"));
         var userLog = new UserLog(user, "Resposible", id_Resposible.toString(), "Read Resposible", EnumAction.READ);
+        userLogRepository.save(userLog);
+
+        return new ResponsibleDetailsDTO(responsible);
+
+    }
+
+    @Override
+    public ResponsibleDetailsDTO getResposibleByEdv(String edv, Long userLog_id) {
+        var responsible = responsibleRepository.findByEdv(edv).orElseThrow(() -> new NotFoundException("Responsible Id Not Found"));
+        if (!responsible.isOperative()){
+            throw new OperativeFalseException("The inactive responsible cannot be accessed.");
+        }
+
+        Users user = this.userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("Id not found"));
+        var userLog = new UserLog(user, "Resposible", edv, "Read Resposible", EnumAction.READ);
         userLogRepository.save(userLog);
 
         return new ResponsibleDetailsDTO(responsible);

@@ -84,7 +84,7 @@ public class ResponsibleController {
             @PathVariable("responsible_id") Long responsible_id,
             @Parameter(description = "User log ID for tracking changes", required = true)
             @RequestParam Long userLog_id) {
-        var responsible = responsibleServiceImp.getResposible(responsible_id, userLog_id);
+        var responsible = responsibleServiceImp.getResposibleById(responsible_id, userLog_id);
         return ResponseEntity.ok(responsible);
     }
 

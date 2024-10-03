@@ -4,6 +4,7 @@ import com.MapView.BackEnd.dtos.Equipment.EquipmentCreateDTO;
 import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleCreateDTO;
 import com.MapView.BackEnd.dtos.Location.LocationCreateDTO;
 import com.MapView.BackEnd.dtos.Responsible.ResponsibleCrateDTO;
+import com.MapView.BackEnd.enums.EnumCourse;
 import com.MapView.BackEnd.enums.EnumModelEquipment;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public record RegisterCreateDTO (
@@ -32,20 +34,20 @@ public record RegisterCreateDTO (
         @Positive
         @Min(1)
         Long id_building,
-        @NotBlank
-        String post,
+
         @Positive
         @Min(1)
         Long id_eviroment,
+        @NotBlank
+        String post,
 
         @NotBlank(message = "Owner id cannot be blank.")
         String id_owner,
-        @NotBlank(message = "Owner name cannot be blank.")
-        String owner_name,
-
         @NotBlank(message = "CostCenter name cannot be blank")
         String costCenter_name,
+        EnumCourse enumCourse,
         String name_classes,
+        LocalDate criation_date,
         List<ResponsibleCrateDTO> dataResposible
 
 ) {

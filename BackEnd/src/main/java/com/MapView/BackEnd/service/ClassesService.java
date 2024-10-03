@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface ClassesService {
 
-    ClassesDetaiLDTO getClasse(Long id, Long userLog_id);
+    ClassesDetaiLDTO getClasseById(Long id, Long userLog_id);
+    ClassesDetaiLDTO getClasseByName(String class_name, Long userLog_id);
     ClassesDetaiLDTO createClasses(ClassesCreateDTO data, Long userLog_id);
     ClassesDetaiLDTO updateClasses(Long classes_id, ClassesUpdateDTO data, Long userLog_id);
     List<ClassesDetaiLDTO> getAllClasses(int page, int itens, Long userLog_id);

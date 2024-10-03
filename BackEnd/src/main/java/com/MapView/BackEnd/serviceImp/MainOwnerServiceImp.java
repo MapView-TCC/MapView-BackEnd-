@@ -97,15 +97,6 @@ public class MainOwnerServiceImp implements MainOwnerService {
         if (!mainowner.isOperative()){
             return null;
         }
-
-        if (dados.owner_name() != null){
-            if (dados.owner_name().isBlank()){
-                throw new BlankErrorException("Owner name cannot be blank");
-            }
-            mainowner.setOwner_name(dados.owner_name());
-            userlog.setField("Main Owner name to: "+dados.owner_name());
-        }
-
         if (dados.id_cost_center() != null){
             var costcenter = costCenterRepository.findById(dados.id_cost_center()).orElseThrow(() -> new NotFoundException("Cost Center id not found"));
             mainowner.setCostCenter(costcenter);

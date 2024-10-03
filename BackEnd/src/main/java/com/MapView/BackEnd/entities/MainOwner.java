@@ -18,7 +18,6 @@ import java.util.Set;
 public class MainOwner {
     @Id
     private String id_owner;
-    private String owner_name;
     @OneToOne
     @JoinColumn(name = "id_cost_center")
     private CostCenter costCenter;
@@ -31,7 +30,6 @@ public class MainOwner {
 
     public MainOwner(MainOwnerCreateDTO dados, CostCenter costCenter) {
         this.id_owner = dados.id_owner();
-        this.owner_name =  dados.owner_name();
         this.costCenter = costCenter;
         this.operative = true;
     }

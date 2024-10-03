@@ -71,7 +71,7 @@ public class ClassesController {
             @PathVariable("id_classes") Long id_classes,
             @Parameter(description = "User log ID for tracking changes", required = true)
             @RequestParam Long userLog_id) {
-        var classe = classesServiceImp.getClasse(id_classes, userLog_id);
+        var classe = classesServiceImp.getClasseById(id_classes, userLog_id);
         return ResponseEntity.ok(classe);
     }
 

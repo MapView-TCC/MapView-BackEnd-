@@ -1,13 +1,18 @@
 package com.MapView.BackEnd.serviceImp;
 
-import com.MapView.BackEnd.dtos.Enviroment.EnviromentDetailsDTO;
+import com.MapView.BackEnd.dtos.Classes.ClassesCreateDTO;
+import com.MapView.BackEnd.dtos.Classes.ClassesDetaiLDTO;
+import com.MapView.BackEnd.dtos.CostCenter.CostCenterCreateDTO;
+import com.MapView.BackEnd.dtos.CostCenter.CostCenterDetailsDTO;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentCreateDTO;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentDetailsDTO;
 import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleCreateDTO;
 import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleDetailsDTO;
 import com.MapView.BackEnd.dtos.Location.LocationCreateDTO;
 import com.MapView.BackEnd.dtos.Location.LocationDetalsDTO;
+import com.MapView.BackEnd.dtos.MainOwner.MainOwnerCreateDTO;
 import com.MapView.BackEnd.dtos.MainOwner.MainOwnerDetailsDTO;
+import com.MapView.BackEnd.dtos.Post.PostCreateDTO;
 import com.MapView.BackEnd.dtos.Post.PostDetailDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterCreateDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterDetailsDTO;
@@ -16,7 +21,7 @@ import com.MapView.BackEnd.dtos.Responsible.ResponsibleDetailsDTO;
 import com.MapView.BackEnd.entities.*;
 import com.MapView.BackEnd.enums.EnumAction;
 import com.MapView.BackEnd.infra.NotFoundException;
-import com.MapView.BackEnd.infra.OperativeFalseException;
+import com.MapView.BackEnd.infra.PostsErrorException;
 import com.MapView.BackEnd.repository.*;
 import com.MapView.BackEnd.service.RegisterService;
 import org.springframework.stereotype.Service;
@@ -24,7 +29,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 
@@ -45,6 +49,10 @@ public class RegisterServiceImp implements RegisterService {
     private final PostServiceImp postServiceImp;
     private final EnviromentServiceImp enviromentServiceImp;
     private final MainOwnerServiceImp mainOwnerServiceImp;
+    private final CostCenterServiceImp costCenterServiceImp;
+    private final ClassesServiceImp classesServiceImp;
+    private final ResponsibleServiceImp responsibleServiceImp;
+    private  final EquipmentResponsibleServiceImp equipmentResponsibleServiceImp;
 
 
     public RegisterServiceImp(PostRepository postRepository,
@@ -57,7 +65,13 @@ public class RegisterServiceImp implements RegisterService {
                               ResponsibleRepository responsibleRepository,
                               EquipmentResponsibleRepository equipmentResponsibleRepository,
                               ClassesRepository classesRepository, EquipmentServiceImp equipmentServiceImp,
-                              LocationServiceImp locationServiceImp, PostServiceImp postServiceImp, EnviromentServiceImp enviromentServiceImp, MainOwnerServiceImp mainOwnerServiceImp) {
+                              LocationServiceImp locationServiceImp,
+                              PostServiceImp postServiceImp,
+                              EnviromentServiceImp enviromentServiceImp,
+                              MainOwnerServiceImp mainOwnerServiceImp,
+                              CostCenterServiceImp costCenterServiceImp,
+                              ClassesServiceImp classesServiceImp,
+                              ResponsibleServiceImp responsibleServiceImp, EquipmentResponsibleServiceImp equipmentResponsibleServiceImp) {
 
         this.postRepository = postRepository;
         this.enviromentRepository = enviromentRepository;
@@ -74,6 +88,10 @@ public class RegisterServiceImp implements RegisterService {
         this.postServiceImp = postServiceImp;
         this.enviromentServiceImp = enviromentServiceImp;
         this.mainOwnerServiceImp = mainOwnerServiceImp;
+        this.costCenterServiceImp = costCenterServiceImp;
+        this.classesServiceImp = classesServiceImp;
+        this.responsibleServiceImp = responsibleServiceImp;
+        this.equipmentResponsibleServiceImp = equipmentResponsibleServiceImp;
     }
 
 
@@ -81,38 +99,49 @@ public class RegisterServiceImp implements RegisterService {
     public RegisterDetailsDTO register(RegisterCreateDTO data,Long userLog_id) {
         Users userlog = userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("This uses is incorrect"));
 
+        try {
+            PostDetailDTO post = postServiceImp.createPost(new PostCreateDTO(data.post()),userLog_id);
+            LocationDetalsDTO location = locationServiceImp.createLocation(new LocationCreateDTO(post.id_post(),data.id_eviroment()));
+            CostCenterDetailsDTO costcenter = costCenterServiceImp.createCostCenter(new CostCenterCreateDTO(data.costCenter_name()),userLog_id);
+
+            MainOwnerDetailsDTO owner = mainOwnerServiceImp.createMainOwner(new MainOwnerCreateDTO(data.id_owner(),costcenter.id_cost_center()),userLog_id);
+            EquipmentDetailsDTO equipment = equipmentServiceImp.createEquipment(new EquipmentCreateDTO(
+                    data.id_equipment(),
+                    data.name_equipment(),
+                    data.rfid(), data.type(),
+                    data.model(),data.validity(),
+                    data.admin_rights(),
+                    data.observation(),
+                    location.id_location(),
+                    owner.id_owner()),
+                    userLog_id);
+
+            ClassesDetaiLDTO newClasses = classesServiceImp.createClasses(new ClassesCreateDTO(data.enumCourse(), data.name_classes(), userLog_id,LocalDate.now()),userLog_id);
+            List<ResponsibleDetailsDTO> responsibleDetailsDTO = new ArrayList<>();
+
+                for (ResponsibleCrateDTO listResponsible: data.dataResposible()) {
+                    ResponsibleDetailsDTO responsible = responsibleServiceImp.createResposible(new ResponsibleCrateDTO(
+                            listResponsible.responsible_name(),
+                            listResponsible.edv(),
+                            newClasses.id_classes(),
+                            userLog_id), userLog_id);
+
+                    responsibleDetailsDTO.add(responsible);
+                    EquipmentResponsibleDetailsDTO equipmentResponsible = equipmentResponsibleServiceImp.createEquipmentResponsible(new EquipmentResponsibleCreateDTO(equipment.id_equipment(),responsible.responsible_id(),LocalDate.now(),LocalDate.now()));
+                    UserlogCreate(userlog,"EquipmentResponsible",equipmentResponsible.id_equip_resp().toString(),"Create new EquipmentResponsible");
+
+                }
+
+            return new RegisterDetailsDTO(equipment,location,responsibleDetailsDTO);
 
 
 
-        MainOwnerDetailsDTO mainOwner = mainOwnerServiceImp.getMainOwner(dataRegister.dataEquipment().id_owner(),userLog_id);
-        PostDetailDTO post = postServiceImp.getPost(dataRegister.dataLocation().id_post(),userLog_id);
-        EnviromentDetailsDTO environment = enviromentServiceImp.getEnviroment(dataRegister.dataLocation().id_eviroment(),userLog_id);
-
-        Location location = locationRepository.findByIdPostAndIdEnvironment(post.id_post(),environment.id_enviroment()).orElseGet(() -> locationRepository.save(dataRegister.dataLocation()));
-        List<ResponsibleDetailsDTO> listResponsible = new ArrayList<>();
-
-        EquipmentDetailsDTO equipmentDetailsDTO = equipmentServiceImp.createEquipment()
-
-        EquipmentDetailsDTO equipment = equipmentRepository.findByIdEquipment(dataRegister.dataEquipment().id_equipment()).orElseGet(() -> equipmentServiceImp.createEquipment(dataRegister.dataEquipment(),userLog_id));
-
-
-        for (ResponsibleCrateDTO r: dataRegister.dataResposible()) {
-
-            Classes classes = classesRepository.findById(r.id_classes())
-                    .orElseThrow(() -> new RuntimeException("Id classes not found"));
-            Users user = userRepository.findById(r.id_user())
-                    .orElseThrow(() -> new RuntimeException("Id classes not found"));
-
-            Responsible responsible = responsibleRepository.findByEdv(r.edv()).orElseGet(() -> responsibleRepository.save(new Responsible(r,classes,user)));
-
-            listResponsible.add(new ResponsibleDetailsDTO(responsible));
-            EquipmentResponsible equipmentResponsible = equipmentResponsibleRepository.save(new EquipmentResponsible(responsible,equipment));
-            UserlogCreate(userlog,"EquipmentResponsible",equipmentResponsible.getId_equip_resp().toString(),"Create new EquipmentResponsible");
-
+        }catch (Exception e){
+            throw new PostsErrorException("Um dos dos posts falharam");
         }
 
 
-        return new RegisterDetailsDTO(equipment,location,listResponsible);
+
 
     }
 

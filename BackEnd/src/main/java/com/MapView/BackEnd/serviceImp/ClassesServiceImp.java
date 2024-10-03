@@ -49,7 +49,7 @@ public class ClassesServiceImp implements ClassesService {
     }
 
     @Override
-    public ClassesDetaiLDTO getClasse(Long id, Long userLog_id) {
+    public ClassesDetaiLDTO getClasseById(Long id, Long userLog_id) {
         var usuario_log = userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("User Id Not Found"));
         var classe = classesRepository.findById(id).orElseThrow(() -> new NotFoundException("Classe id Not Found"));
         if (!classe.isOperative()){
@@ -60,6 +60,22 @@ public class ClassesServiceImp implements ClassesService {
         userLogRepository.save(userLog);
 
         return new ClassesDetaiLDTO(classe);
+    }
+
+    @Override
+    public ClassesDetaiLDTO getClasseByName(String class_name, Long userLog_id) {
+        var usuario_log = userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("User Id Not Found"));
+
+        Classes classe = classesRepository.findByClasses(class_name).orElse(null);
+        if (classe != null){
+            if (!classe.isOperative()){
+                throw new OperativeFalseException("The classe area cannot be read..");
+            }
+            var userLog = new UserLog(usuario_log,"Classe",class_name,"Read Area",EnumAction.READ);
+            userLogRepository.save(userLog);
+            return new ClassesDetaiLDTO(classe);
+        }
+        return null;
     }
 
     @Override

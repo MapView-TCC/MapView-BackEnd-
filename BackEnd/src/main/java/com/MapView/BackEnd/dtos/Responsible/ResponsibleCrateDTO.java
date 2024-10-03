@@ -15,4 +15,5 @@ public record ResponsibleCrateDTO(@NotBlank(message = "Responsible name name id 
                                   @Min(value = 1, message = "Building Id cannot be smaller than 0.")
                                   @Positive(message = "User Id must be Positive.")
                                   Long id_user) {
+
 }
