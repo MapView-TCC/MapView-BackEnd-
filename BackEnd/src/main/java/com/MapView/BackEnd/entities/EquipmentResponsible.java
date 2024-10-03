@@ -48,6 +48,13 @@ public class EquipmentResponsible {
         this.operative = true;
     }
 
-    public EquipmentResponsible(List<ResponsibleCrateDTO> dataResposible, Equipment equipment, Responsible save) {
+    public EquipmentResponsible(  Responsible responsible, Equipment equipment) {
+        this.idEquipment = equipment;
+        this.id_responsible = responsible;
+        this.start_usage = LocalDate.now();
+        this.end_usage = null;
+        this.operative = true;
     }
+
+
 }

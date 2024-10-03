@@ -1,5 +1,9 @@
 package com.MapView.BackEnd.dtos.Register;
 
+import com.MapView.BackEnd.dtos.Equipment.EquipmentDetailsDTO;
+import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleDetailsDTO;
+import com.MapView.BackEnd.dtos.Location.LocationDetalsDTO;
+import com.MapView.BackEnd.dtos.Responsible.ResponsibleDetailsDTO;
 import com.MapView.BackEnd.entities.*;
 import com.MapView.BackEnd.enums.EnumModelEquipment;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -20,33 +24,24 @@ public record RegisterDetailsDTO (String id_equipment,
                                   Long id_location,
                                   Post post,
                                   Enviroment enviroment,
-                                  Long id_equip_resp,
-                                  Equipment equipment,
-                                  List<Responsible> responsible,
-                                  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-                                  LocalDate start_usage,
-                                  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-                                  LocalDate end_usage) {
 
-    public RegisterDetailsDTO(Equipment equipment, Location location, EquipmentResponsible equipmentResponsible){
-        this(equipment.getIdEquipment(),
-                equipment.getName_equipment(),
-                equipment.getRfid(),
-                equipment.getType(),
-                equipment.getModel(),
-                equipment.getValidity(),
-                equipment.getAdmin_rights(),
-                equipment.getObservation(),
-                equipment.getLocation(),
-                equipment.getOwner(),
-                location.getId_location(),
-                location.getPost(),
-                location.getEnvironment(),
-                equipmentResponsible.getId_equip_resp(),
-                equipmentResponsible.getIdEquipment(),
-                equipmentResponsible.getId_responsible(),
-                equipmentResponsible.getStart_usage(),
-                equipmentResponsible.getEnd_usage());
+                                  List<ResponsibleDetailsDTO> responsible) {
+
+    public RegisterDetailsDTO(EquipmentDetailsDTO equipment, LocationDetalsDTO location, List<ResponsibleDetailsDTO> equipmentResponsible){
+        this(equipment.id_equipment(),
+                equipment.name_equipment(),
+                equipment.rfid(),
+                equipment.type(),
+                equipment.model(),
+                equipment.validity(),
+                equipment.admin_rights(),
+                equipment.observation(),
+                equipment.location(),
+                equipment.owner(),
+                location.id_location(),
+                location.post(),
+                location.enviroment(),
+                equipmentResponsible);
 
     }
 
