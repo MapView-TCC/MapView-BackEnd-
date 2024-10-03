@@ -3,7 +3,7 @@ package com.MapView.BackEnd.dtos.Equipment;
 import com.MapView.BackEnd.enums.EnumModelEquipment;
 import jakarta.validation.constraints.*;
 
-public record EquipmentCreateDTO(
+public record  EquipmentCreateDTO(
         @NotBlank(message = "Equipment id cannot be blank")
         @Size(min = 8,message = "Equipment_id must be size 8")
         String id_equipment,

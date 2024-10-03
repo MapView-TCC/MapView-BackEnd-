@@ -1,5 +1,6 @@
 package com.MapView.BackEnd.repository;
 
+import com.MapView.BackEnd.dtos.Location.LocationCreateDTO;
 import com.MapView.BackEnd.dtos.Location.LocationDetalsDTO;
 import com.MapView.BackEnd.entities.Enviroment;
 import com.MapView.BackEnd.entities.Location;
@@ -16,5 +17,6 @@ import java.util.Optional;
 public interface LocationRepository extends JpaRepository<Location,Long> {
     Page<Location> findAll(Pageable pageable);
     Optional<Location> findByEnvironment(Enviroment enviroment);
-    Optional<LocationDetalsDTO> findByPostAndEnvironment(Post post, Enviroment environment);
+    Optional<Location> findByIdPostAndIdEnvironment(Long id_post, Long Id_environment);
+    Location save (LocationCreateDTO data);
 }

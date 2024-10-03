@@ -1,5 +1,6 @@
 package com.MapView.BackEnd.repository;
 
+import com.MapView.BackEnd.dtos.Equipment.EquipmentDetailsDTO;
 import com.MapView.BackEnd.entities.Equipment;
 import com.MapView.BackEnd.enums.EnumModelEquipment;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ public interface EquipmentRepository extends JpaRepository<Equipment,String> {
     Optional<Equipment> findByValidity(LocalDate validity);
     List<Equipment> findByModel(EnumModelEquipment equipment);
     Optional<Equipment> findByRfid(Long rfid);
+    Optional<EquipmentDetailsDTO> findByIdEquipment (String id);
 
 //    Optional<Equipment> findByNameEquipment(String name_equipment);
 

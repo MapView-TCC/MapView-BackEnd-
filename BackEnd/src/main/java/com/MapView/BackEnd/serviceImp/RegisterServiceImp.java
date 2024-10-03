@@ -1,11 +1,14 @@
 package com.MapView.BackEnd.serviceImp;
 
+import com.MapView.BackEnd.dtos.Enviroment.EnviromentDetailsDTO;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentCreateDTO;
 import com.MapView.BackEnd.dtos.Equipment.EquipmentDetailsDTO;
 import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleCreateDTO;
 import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleDetailsDTO;
 import com.MapView.BackEnd.dtos.Location.LocationCreateDTO;
 import com.MapView.BackEnd.dtos.Location.LocationDetalsDTO;
+import com.MapView.BackEnd.dtos.MainOwner.MainOwnerDetailsDTO;
+import com.MapView.BackEnd.dtos.Post.PostDetailDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterCreateDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterDetailsDTO;
 import com.MapView.BackEnd.dtos.Responsible.ResponsibleCrateDTO;
@@ -37,8 +40,11 @@ public class RegisterServiceImp implements RegisterService {
     private final ResponsibleRepository responsibleRepository;
     private final EquipmentResponsibleRepository equipmentResponsibleRepository;
     private final ClassesRepository classesRepository;
-
+    private final EquipmentServiceImp equipmentServiceImp;
     private final LocationServiceImp locationServiceImp;
+    private final PostServiceImp postServiceImp;
+    private final EnviromentServiceImp enviromentServiceImp;
+    private final MainOwnerServiceImp mainOwnerServiceImp;
 
 
     public RegisterServiceImp(PostRepository postRepository,
@@ -50,8 +56,9 @@ public class RegisterServiceImp implements RegisterService {
                               MainOwnerRepository mainOwnerRepository,
                               ResponsibleRepository responsibleRepository,
                               EquipmentResponsibleRepository equipmentResponsibleRepository,
-                              ClassesRepository classesRepository,
-                              LocationServiceImp locationServiceImp) {
+                              ClassesRepository classesRepository, EquipmentServiceImp equipmentServiceImp,
+                              LocationServiceImp locationServiceImp, PostServiceImp postServiceImp, EnviromentServiceImp enviromentServiceImp, MainOwnerServiceImp mainOwnerServiceImp) {
+
         this.postRepository = postRepository;
         this.enviromentRepository = enviromentRepository;
         this.equipmentRepository = equipmentRepository;
@@ -62,47 +69,32 @@ public class RegisterServiceImp implements RegisterService {
         this.responsibleRepository = responsibleRepository;
         this.equipmentResponsibleRepository = equipmentResponsibleRepository;
         this.classesRepository = classesRepository;
-
+        this.equipmentServiceImp = equipmentServiceImp;
         this.locationServiceImp = locationServiceImp;
+        this.postServiceImp = postServiceImp;
+        this.enviromentServiceImp = enviromentServiceImp;
+        this.mainOwnerServiceImp = mainOwnerServiceImp;
     }
 
 
     @Override
-    public RegisterDetailsDTO register(RegisterCreateDTO dataRegister,Long userLog_id) {
+    public RegisterDetailsDTO register(RegisterCreateDTO data,Long userLog_id) {
         Users userlog = userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("This uses is incorrect"));
 
-        Location locationEquip = locationRepository.findById(dataRegister.dataEquipment().id_location())
-                .orElseThrow(() -> new NotFoundException("Id location Não encontrado!"));
 
 
-        MainOwner mainOwner = mainOwnerRepository.findById(String.valueOf(dataRegister.dataEquipment().id_owner()))
-                .orElseThrow(() -> new NotFoundException("Id main owner Não encontrado"));
 
+        MainOwnerDetailsDTO mainOwner = mainOwnerServiceImp.getMainOwner(dataRegister.dataEquipment().id_owner(),userLog_id);
+        PostDetailDTO post = postServiceImp.getPost(dataRegister.dataLocation().id_post(),userLog_id);
+        EnviromentDetailsDTO environment = enviromentServiceImp.getEnviroment(dataRegister.dataLocation().id_eviroment(),userLog_id);
 
-        if(!mainOwner.isOperative()){
-            throw new OperativeFalseException("The inactive mainowner cannot be accessed.");
-        }
-
-        var post = postRepository.findById(dataRegister.dataLocation().id_post()).orElseThrow(() -> new NotFoundException("Post Id not Found"));
-        if(!post.isOperative()){
-            throw new OperativeFalseException("The inactive post cannot be accessed.");
-        }
-
-        var enviroment = enviromentRepository.findById(dataRegister.dataLocation().id_eviroment()).orElseThrow(() -> new NotFoundException("Enviroment Id Not Found"));
-        if(!enviroment.isOperative()){
-            throw new OperativeFalseException("The inactive enviroment cannot be accessed.");
-        }
-
-        LocationDetalsDTO location = locationRepository.findByPostAndEnvironment(post,enviroment).orElseGet(() -> locationServiceImp.createLocation(dataRegister.dataLocation()));
-
-        UserlogCreate(userlog,"Location",location.id_location().toString(),"Create new Location");
+        Location location = locationRepository.findByIdPostAndIdEnvironment(post.id_post(),environment.id_enviroment()).orElseGet(() -> locationRepository.save(dataRegister.dataLocation()));
         List<ResponsibleDetailsDTO> listResponsible = new ArrayList<>();
 
-        LocalDate stringToDate = getStartDateFromQuarter(dataRegister.dataEquipment().validity());
+        EquipmentDetailsDTO equipmentDetailsDTO = equipmentServiceImp.createEquipment()
 
-        Equipment equipment = equipmentRepository.save(new Equipment(dataRegister.dataEquipment(),stringToDate,location,mainOwner));
-        EquipmentDetailsDTO equipmentDetails  = new EquipmentDetailsDTO(equipment);
-        UserlogCreate(userlog,"Equipment",equipment.getIdEquipment(),"Create new Equipment");
+        EquipmentDetailsDTO equipment = equipmentRepository.findByIdEquipment(dataRegister.dataEquipment().id_equipment()).orElseGet(() -> equipmentServiceImp.createEquipment(dataRegister.dataEquipment(),userLog_id));
+
 
         for (ResponsibleCrateDTO r: dataRegister.dataResposible()) {
 
@@ -120,7 +112,7 @@ public class RegisterServiceImp implements RegisterService {
         }
 
 
-        return new RegisterDetailsDTO(equipmentDetails,location,listResponsible);
+        return new RegisterDetailsDTO(equipment,location,listResponsible);
 
     }
 
