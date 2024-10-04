@@ -48,7 +48,7 @@ public class MainOwnerController {
         var mainOwner = mainOwnerServiceImp.createMainOwner(mainOwnerDTO, userLog_id);
         var uri = uriBuilder.path("/api/v1/mainowner/{id}").buildAndExpand(mainOwner.id_owner()).toUri();
         return ResponseEntity.created(uri).body(new MainOwnerDetailsDTO(
-                mainOwner.id_owner(), mainOwner.owner_name(), mainOwner.costCenter()
+                mainOwner.id_owner(), mainOwner.costCenter()
         ));
     }
 

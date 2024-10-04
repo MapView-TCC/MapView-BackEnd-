@@ -77,6 +77,8 @@ public class MainOwnerServiceImp implements MainOwnerService {
 
         var userLog = new UserLog(user,"MainOwner",mainowner_id.toString(),"Create new MainOwner", EnumAction.CREATE);
         userLogRepository.save(userLog);
+        System.out.println("Post: MainOwner ");
+
 
         return new MainOwnerDetailsDTO(mainOwner);
 

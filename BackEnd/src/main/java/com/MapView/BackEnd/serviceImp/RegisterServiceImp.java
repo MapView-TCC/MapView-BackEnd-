@@ -16,6 +16,8 @@ import com.MapView.BackEnd.dtos.Post.PostCreateDTO;
 import com.MapView.BackEnd.dtos.Post.PostDetailDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterCreateDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterDetailsDTO;
+import com.MapView.BackEnd.dtos.Register.ResponsibleResgisterDTO;
+import com.MapView.BackEnd.dtos.Register.TesteDTO;
 import com.MapView.BackEnd.dtos.Responsible.ResponsibleCrateDTO;
 import com.MapView.BackEnd.dtos.Responsible.ResponsibleDetailsDTO;
 import com.MapView.BackEnd.entities.*;
@@ -96,10 +98,10 @@ public class RegisterServiceImp implements RegisterService {
 
 
     @Override
-    public RegisterDetailsDTO register(RegisterCreateDTO data,Long userLog_id) {
+    public RegisterDetailsDTO register(RegisterCreateDTO data, Long userLog_id) {
         Users userlog = userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("This uses is incorrect"));
 
-        try {
+
             PostDetailDTO post = postServiceImp.createPost(new PostCreateDTO(data.post()),userLog_id);
             LocationDetalsDTO location = locationServiceImp.createLocation(new LocationCreateDTO(post.id_post(),data.id_eviroment()));
             CostCenterDetailsDTO costcenter = costCenterServiceImp.createCostCenter(new CostCenterCreateDTO(data.costCenter_name()),userLog_id);
@@ -119,7 +121,7 @@ public class RegisterServiceImp implements RegisterService {
             ClassesDetaiLDTO newClasses = classesServiceImp.createClasses(new ClassesCreateDTO(data.enumCourse(), data.name_classes(), userLog_id,LocalDate.now()),userLog_id);
             List<ResponsibleDetailsDTO> responsibleDetailsDTO = new ArrayList<>();
 
-                for (ResponsibleCrateDTO listResponsible: data.dataResposible()) {
+                for (ResponsibleResgisterDTO listResponsible: data.dataResposible()) {
                     ResponsibleDetailsDTO responsible = responsibleServiceImp.createResposible(new ResponsibleCrateDTO(
                             listResponsible.responsible_name(),
                             listResponsible.edv(),
@@ -133,16 +135,6 @@ public class RegisterServiceImp implements RegisterService {
                 }
 
             return new RegisterDetailsDTO(equipment,location,responsibleDetailsDTO);
-
-
-
-        }catch (Exception e){
-            throw new PostsErrorException("Um dos dos posts falharam");
-        }
-
-
-
-
     }
 
 

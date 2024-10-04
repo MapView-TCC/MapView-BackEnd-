@@ -44,6 +44,8 @@ public class ClassesServiceImp implements ClassesService {
 
         var userLog = new UserLog(usuario_log,"Classes", id_classes.toString(),"Create new classes", EnumAction.CREATE);
         userLogRepository.save(userLog);
+        System.out.println("Post: classes ");
+
 
         return new ClassesDetaiLDTO(classe);
     }

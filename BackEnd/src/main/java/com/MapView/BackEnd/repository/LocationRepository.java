@@ -17,6 +17,6 @@ import java.util.Optional;
 public interface LocationRepository extends JpaRepository<Location,Long> {
     Page<Location> findAll(Pageable pageable);
     Optional<Location> findByEnvironment(Enviroment enviroment);
-    Optional<Location> findByIdPostAndIdEnvironment(Long id_post, Long Id_environment);
+
     Location save (LocationCreateDTO data);
 }

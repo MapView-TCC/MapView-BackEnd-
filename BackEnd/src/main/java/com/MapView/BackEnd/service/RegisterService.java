@@ -5,8 +5,9 @@ import com.MapView.BackEnd.dtos.EquipmentResponsible.EquipmentResponsibleCreateD
 import com.MapView.BackEnd.dtos.Location.LocationCreateDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterCreateDTO;
 import com.MapView.BackEnd.dtos.Register.RegisterDetailsDTO;
+import com.MapView.BackEnd.dtos.Register.TesteDTO;
 
 public interface RegisterService {
 
-    RegisterDetailsDTO register (RegisterCreateDTO dataRegister, Long userLog_id);
+    RegisterDetailsDTO  register(RegisterCreateDTO data, Long userLog_id);
 }

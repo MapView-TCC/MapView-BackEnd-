@@ -18,7 +18,6 @@ public interface EquipmentRepository extends JpaRepository<Equipment,String> {
     Optional<Equipment> findByValidity(LocalDate validity);
     List<Equipment> findByModel(EnumModelEquipment equipment);
     Optional<Equipment> findByRfid(Long rfid);
-    Optional<EquipmentDetailsDTO> findByIdEquipment (String id);
 
 //    Optional<Equipment> findByNameEquipment(String name_equipment);
 

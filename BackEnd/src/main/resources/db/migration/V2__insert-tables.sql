@@ -87,12 +87,12 @@ INSERT INTO cost_center (cost_center_name, operative) VALUES
 ('Cost Center 5', 0);
 
 -- Inserir novos donos principais
-INSERT INTO main_owner (id_owner, owner_name, id_cost_center, operative) VALUES
-('O001', 'Owner 1', 1, 1),
-('O002', 'Owner 2', 2, 0),
-('O003', 'Owner 3', 3, 1),
-('O004', 'Owner 4', 4, 1),
-('O005', 'Owner 5', 5, 0);
+INSERT INTO main_owner (id_owner, id_cost_center, operative) VALUES
+('O001', 1, 1),
+('O002', 2, 0),
+('O003', 3, 1),
+('O004', 4, 1),
+('O005', 5, 0);
 
 -- Inserir novos equipamentos
 INSERT INTO equipment (id_equipment, name_equipment, rfid, type, model, validity, admin_rights, observation, id_location, id_owner, operative) VALUES

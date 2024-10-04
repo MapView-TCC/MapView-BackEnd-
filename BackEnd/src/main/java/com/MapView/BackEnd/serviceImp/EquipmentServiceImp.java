@@ -126,6 +126,7 @@ public class EquipmentServiceImp implements EquipmentService {
         trackingHistoryRepository.save(trackingHistory);
 
         System.out.println(new EquipmentDetailsDTO(equipment));
+        System.out.println("Post: Equipment ");
         return new EquipmentDetailsDTO(equipment);
     }
 

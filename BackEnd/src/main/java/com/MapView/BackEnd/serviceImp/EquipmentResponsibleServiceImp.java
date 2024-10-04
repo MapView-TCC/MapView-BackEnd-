@@ -59,6 +59,7 @@ public class EquipmentResponsibleServiceImp implements EquipmentResponsibleServi
         EquipmentResponsible equipmentResponsible = new EquipmentResponsible(data, equipment, responsible);
 
         equipmentResponsibleRepository.save(equipmentResponsible);
+        System.out.println("Post: Equipmentresponsible ");
 
         return new EquipmentResponsibleDetailsDTO(equipmentResponsible);
 

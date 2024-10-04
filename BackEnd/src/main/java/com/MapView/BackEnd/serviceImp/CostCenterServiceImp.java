@@ -64,6 +64,7 @@ public class CostCenterServiceImp implements CostCenterService {
 
         var userLog = new UserLog(user,"CostCenter",cost_id.toString(),"Create new CostCenter", EnumAction.CREATE);
         userLogRepository.save(userLog);
+        System.out.println("Post: createCostCenter ");
 
         return new CostCenterDetailsDTO(costcenter);
     }

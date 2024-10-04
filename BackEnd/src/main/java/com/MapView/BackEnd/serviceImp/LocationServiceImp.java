@@ -57,7 +57,9 @@ public class LocationServiceImp implements LocationService {
 
             var location = new Location(post, enviroment);
             locationRepository.save(location);
+            System.out.println("Post: Post ");
             return new LocationDetalsDTO(location);
+
 
         }catch (DataIntegrityViolationException e ){
             throw new LocationAlreadyExistsException("The location with these values has been created");
