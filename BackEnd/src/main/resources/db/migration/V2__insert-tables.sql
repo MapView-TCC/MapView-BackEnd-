@@ -122,14 +122,14 @@ INSERT INTO main_owner (id_owner, id_cost_center, operative) VALUES
 ('FRG7CE', 5, 1);
 
 -- Inserir novos equipamentos
-INSERT INTO equipment (id_equipment, name_equipment, rfid, type, model, validity, admin_rights, observation, id_location, id_owner, operative) VALUES
+INSERT INTO equipment (cod_equipment, name_equipment, rfid, type, model, validity, admin_rights, observation, id_location, id_owner, operative) VALUES
 ('E001', 'Laptop A', 123456789012345, 'Laptop', 'NOTEBOOK_STANDARD', '2025-01-01', 'Admin', 'Good condition', 1, 'FRG7CA',  1),
 ('E002', 'Desktop B', 234567890123456, 'Desktop', 'NOTEBOOK_STANDARD', '2024-12-31', 'User', 'Needs repair', 2, 'FRG7CB',  1),
 ('E003', 'Tablet C', 345678901234567, 'Tablet', 'NOTEBOOK_STANDARD', '2026-01-01', 'Admin', 'New', 3, 'FRG7CC',  1),
 ('E004', 'Monitor D', 456789012345678, 'Monitor', 'NOTEBOOK_STANDARD', '2024-11-30', 'User', 'Old', 4, 'FRG7CD',  1),
 ('E005', 'Printer E', 567890123456789, 'Printer', 'NOTEBOOK_STANDARD', '2025-05-01', 'User', 'Average condition', 5, 'FRG7CE',  1);
 
-INSERT INTO equipment (id_equipment, name_equipment, rfid, type, model, validity, admin_rights, observation, id_location, id_owner, operative) VALUES
+INSERT INTO equipment (cod_equipment, name_equipment, rfid, type, model, validity, admin_rights, observation, id_location, id_owner, operative) VALUES
 ('E021', 'Desktop 1', 345678901234560, 'Desktop', 'NOTEBOOK_STANDARD', '2025-01-01', 'Admin', 'Good condition', 1, 'FRG7CC',  1),
 ('E022', 'Desktop 2', 456789012345671, 'Desktop', 'NOTEBOOK_STANDARD', '2024-12-31', 'User', 'Needs repair', 2, 'FRG7CC',  0),
 ('E023', 'Desktop 3', 567890123456782, 'Desktop', 'NOTEBOOK_STANDARD', '2026-01-01', 'Admin', 'New', 3, 'FRG7CC',  1),
@@ -159,11 +159,11 @@ INSERT INTO equipment (id_equipment, name_equipment, rfid, type, model, validity
 
 -- Inserir novos registros de histórico de rastreio
 INSERT INTO tracking_history (id_equipment, id_environment,  action, warning, dateTime) VALUES
-('E001', 1,  'ENTER', 'GREEN', '2024-09-10 08:00:00'),
-('E002', 2,  'OUT', 'YELLOW', '2024-09-10 09:00:00'),
-('E003', 3,  'ENTER', 'RED', '2024-09-10 10:00:00'),
-('E004', 4,  'OUT', 'GREEN', '2024-09-10 11:00:00'),
-('E005', 5, 'ENTER', 'YELLOW', '2024-09-10 12:00:00');
+(1, 1,  'ENTER', 'GREEN', '2024-09-10 08:00:00'),
+(2, 2,  'OUT', 'YELLOW', '2024-09-10 09:00:00'),
+(3, 3,  'ENTER', 'RED', '2024-09-10 10:00:00'),
+(4, 4,  'OUT', 'GREEN', '2024-09-10 11:00:00'),
+(5, 5, 'ENTER', 'YELLOW', '2024-09-10 12:00:00');
 
 -- Inserir novos responsáveis
 INSERT INTO responsible (responsible_name, edv, id_classes, id_user, operative) VALUES
@@ -175,8 +175,8 @@ INSERT INTO responsible (responsible_name, edv, id_classes, id_user, operative) 
 
 -- Inserir novas associações entre equipamentos e responsáveis
 INSERT INTO equipment_responsible (id_equipment, id_responsible, start_usage, end_usage, operative) VALUES
-('E001', 1, '2024-09-01', NULL, 1),
-('E002', 2, '2024-09-02', '2024-09-10', 1),
-('E003', 3, '2024-09-03', NULL, 1),
-('E004', 4, '2024-09-04', '2024-09-15', 1),
-('E005', 5, '2024-09-05', NULL, 1);
+(1, 1, '2024-09-01', NULL, 1),
+(2, 2, '2024-09-02', '2024-09-10', 1),
+(3, 3, '2024-09-03', NULL, 1),
+(4, 4, '2024-09-04', '2024-09-15', 1),
+(5, 5, '2024-09-05', NULL, 1);

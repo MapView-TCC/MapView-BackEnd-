@@ -49,7 +49,7 @@ public class EquipmentController {
 
         var equipment = equipmentServiceImp.createEquipment(dados, userLog_id);
         var uri = uriBuilder.path("/api/v1/equipment/{id}").buildAndExpand(equipment.id_equipment()).toUri();
-        return ResponseEntity.created(uri).body(new EquipmentDetailsDTO(
+        return ResponseEntity.created(uri).body(new EquipmentDetailsDTO(equipment.id(),
                 equipment.id_equipment(), equipment.name_equipment(), equipment.rfid(), equipment.type(),
                 equipment.model(), equipment.validity(), equipment.admin_rights(), equipment.observation(),
                 equipment.location(), equipment.owner()

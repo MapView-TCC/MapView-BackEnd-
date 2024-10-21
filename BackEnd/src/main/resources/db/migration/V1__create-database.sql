@@ -99,7 +99,8 @@ CREATE TABLE IF NOT EXISTS image (
 
 -- Creating the Equipment table, para teste eu tirei o unique do rfid
 CREATE TABLE IF NOT EXISTS equipment (
-    id_equipment VARCHAR(255) unique PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT UNIQUE,
+    cod_equipment VARCHAR(255) unique ,
     name_equipment VARCHAR(255),
     rfid BIGINT unique,
     type VARCHAR(255),
@@ -119,20 +120,20 @@ CREATE TABLE IF NOT EXISTS equipment (
 -- Creating the Notification table
 CREATE TABLE IF NOT EXISTS notification (
     id_notification INT AUTO_INCREMENT PRIMARY KEY,
-    id_equipment VARCHAR(255),
+    id_equipment INT,
     date_notification DATE,
-    FOREIGN KEY(id_equipment) REFERENCES equipment(id_equipment)
+    FOREIGN KEY(id_equipment) REFERENCES equipment(id)
 );
 
 -- Creating the Tracking History table (historico de rastreio)
 CREATE TABLE IF NOT EXISTS tracking_history (
     id_tracking INT AUTO_INCREMENT PRIMARY KEY,
-    id_equipment VARCHAR(255),
+    id_equipment INT,
     id_environment INT,
     action ENUM ('ENTER','OUT'),
     warning ENUM ('RED', 'YELLOW', 'GREEN'),
     dateTime TIMESTAMP,
-    FOREIGN KEY(id_equipment) REFERENCES equipment(id_equipment),
+    FOREIGN KEY(id_equipment) REFERENCES equipment(id),
     FOREIGN KEY(id_environment) REFERENCES environment(id_environment)
 );
 
@@ -151,12 +152,12 @@ CREATE TABLE IF NOT EXISTS responsible (
 -- Creating the auxiliary Equipment_Responsible table
 CREATE TABLE IF NOT EXISTS equipment_responsible (
     id_equip_resp INT AUTO_INCREMENT PRIMARY KEY,
-    id_equipment VARCHAR(255) NOT NULL,
+    id_equipment INT,
     id_responsible INT NOT NULL,
     start_usage DATE NOT NULL,
     end_usage DATE,
     operative TINYINT NOT NULL,
-    FOREIGN KEY(id_equipment) REFERENCES equipment(id_equipment),
+    FOREIGN KEY(id_equipment) REFERENCES equipment(id),
     FOREIGN KEY(id_responsible) REFERENCES responsible(id_responsible)
 );
 

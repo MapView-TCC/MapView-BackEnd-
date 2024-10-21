@@ -160,7 +160,7 @@ public class TrackingHistoryServiceImp implements TrackingHistoryService {
         filterTracking = trackingHistoryRepository.findAll(PageRequest.of(page, itens)).stream()
                 .filter(t -> (action == null || t.getAction() == action))
                 .filter(t -> (colors == null || t.getWarning() == colors))
-                .filter(t -> (id_equipment == null || (t.getEquipment() != null && t.getEquipment().getIdEquipment().equalsIgnoreCase(id_equipment))))
+                .filter(t -> (id_equipment == null || (t.getEquipment() != null && t.getEquipment().getCodigo().equalsIgnoreCase(id_equipment))))
                 .filter(t -> {
                     // Converte o Instant para LocalDateTime no fuso horário local
                     LocalDateTime dateTime = t.getDatetime().atZone(ZoneId.systemDefault()).toLocalDateTime();
@@ -212,8 +212,8 @@ public class TrackingHistoryServiceImp implements TrackingHistoryService {
                 Long locationEquip = equipment.getLocation().getEnvironment().getId_environment();
 
                 if (!locationEquip.equals(id_environment)) {
-                    if (!addedEquipmentIds.contains(equipment.getIdEquipment())) {
-                        addedEquipmentIds.add(equipment.getIdEquipment());
+                    if (!addedEquipmentIds.contains(equipment.getCodigo())) {
+                        addedEquipmentIds.add(equipment.getCodigo());
 
                         List<EquipmentResponsible> equipmentResponsibles = equipmentResponsibleRepository.findByIdEquipment(equipment);
                         List<String> responsibles = new ArrayList<>();

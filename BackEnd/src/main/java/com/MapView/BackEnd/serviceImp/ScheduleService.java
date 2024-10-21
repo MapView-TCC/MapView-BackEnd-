@@ -47,7 +47,7 @@ public class ScheduleService {
 
                     TrackingHistory trackingHistory = new TrackingHistory();
 
-                    NotificationCreateDTO notification = new NotificationCreateDTO(e.getIdEquipment());
+                    NotificationCreateDTO notification = new NotificationCreateDTO(e.getName_equipment());
                     notificationServiceImp.createNotification(notification);
                 }
             }

@@ -10,7 +10,7 @@ public record NotificationDetailsDTO(Long id_notification, String id_equipment, 
     public NotificationDetailsDTO(Notification notification) {
         this(
             notification.getId_notification(),
-            notification.getEquipment().getIdEquipment(),
+            notification.getEquipment().getCodigo(),
             notification.getEquipment().getName_equipment(),
             notification.getEquipment().getType(),
             notification.getEquipment().getLocation().getEnvironment().getEnvironment_name(),

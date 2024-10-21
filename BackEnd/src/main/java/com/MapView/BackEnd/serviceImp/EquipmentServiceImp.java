@@ -63,7 +63,7 @@ public class EquipmentServiceImp implements EquipmentService {
 
     @Override
     public EquipmentDetailsDTO getEquipment(String id_equipment, Long userLog_id) {
-        var equipment = equipmentRepository.findById(String.valueOf(id_equipment)).orElseThrow(() -> new NotFoundException("Id equipment not found!"));
+        var equipment = equipmentRepository.findByCodigo(String.valueOf(id_equipment)).orElseThrow(() -> new NotFoundException("Id equipment not found!"));
         Users user = this.userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("Id not found"));
 
         if (!equipment.isOperative()){
@@ -87,7 +87,7 @@ public class EquipmentServiceImp implements EquipmentService {
 
     @Override
     public EquipmentDetailsDTO  createEquipment(EquipmentCreateDTO data, Long userLog_id) {
-        Equipment verify = equipmentRepository.findByIdEquipmentAndOperativeTrue(data.id_equipment()).orElse(null);
+        Equipment verify = equipmentRepository.findByCodigoAndOperativeTrue(data.id_equipment()).orElse(null);
 
         if (verify == null){
             try{
@@ -134,7 +134,7 @@ public class EquipmentServiceImp implements EquipmentService {
 
     @Override
     public EquipmentDetailsDTO updateEquipment(String id_equipment, EquipmentUpdateDTO data, Long userLog_id) {
-        Equipment equipment = equipmentRepository.findById(id_equipment)
+        Equipment equipment = equipmentRepository.findByCodigo(id_equipment)
                 .orElseThrow(() -> new NotFoundException("Id not found"));
 
         if(!equipment.isOperative()){
@@ -148,7 +148,7 @@ public class EquipmentServiceImp implements EquipmentService {
             if(data.id_equipment().isBlank()){
                 throw new BlankErrorException("Equipment id cannot be blank");
             }
-            equipment.setIdEquipment(data.id_equipment());
+            equipment.setCodigo(data.id_equipment());
             userlog.setField("equipment id to: " + data.id_equipment());
         }
         if (data.name_equipment() != null){
@@ -228,7 +228,7 @@ public class EquipmentServiceImp implements EquipmentService {
     @Override
     public void activateEquipment(String id_equipment, Long userLog_id) {
         Users users = this.userRepository.findById(userLog_id).orElseThrow(() -> new NotFoundException("Id not found"));
-        var equipment = equipmentRepository.findById(id_equipment).orElseThrow(() -> new NotFoundException("Id not found"));
+        var equipment = equipmentRepository.findByCodigo(id_equipment).orElseThrow(() -> new NotFoundException("Id not found"));
 
         if (equipment.isOperative()){
             throw new OpetativeTrueException("It is already activate");
@@ -243,7 +243,7 @@ public class EquipmentServiceImp implements EquipmentService {
     @Override
     public void inactivateEquipment(String id_equipment, Long userLog_id) {
 
-        var equipment = equipmentRepository.findById(id_equipment).orElseThrow(() -> new NotFoundException("Id not found"));
+        var equipment = equipmentRepository.findByCodigo(id_equipment).orElseThrow(() -> new NotFoundException("Id not found"));
 
         if (!equipment.isOperative()){
             throw new OperativeFalseException("It is already inactivate");
@@ -293,7 +293,7 @@ public class EquipmentServiceImp implements EquipmentService {
             predicate.add(criteriaBuilder.like(mainOwnerJoin.get("id_owner"), "%"+id_owner.toLowerCase()+"%"));
         }
         if (id_equipment != null){
-            predicate.add(criteriaBuilder.like(equipmentRoot.get("idEquipment"), "%" + id_equipment.toLowerCase() + "%"));
+            predicate.add(criteriaBuilder.like(equipmentRoot.get("codigo"), "%" + id_equipment.toLowerCase() + "%"));
         }
         if (name_equipment != null){
             predicate.add(criteriaBuilder.like(equipmentRoot.get("name_equipment"), "%" + name_equipment.toLowerCase() + "%"));
@@ -347,7 +347,7 @@ public class EquipmentServiceImp implements EquipmentService {
             Predicate searchPredicate = criteriaBuilder.or(
                     criteriaBuilder.like(criteriaBuilder.lower(equipmentRoot.get("name_equipment")), "%" + searchLower + "%"),
                     criteriaBuilder.like(criteriaBuilder.lower(mainOwnerJoin.get("id_owner")), "%" + searchLower + "%"),
-                    criteriaBuilder.like(criteriaBuilder.lower(equipmentRoot.get("idEquipment")), "%" + searchLower + "%"),
+                    criteriaBuilder.like(criteriaBuilder.lower(equipmentRoot.get("codigo")), "%" + searchLower + "%"),
                     criteriaBuilder.like(criteriaBuilder.lower(postJoin.get("post")), "%" + searchLower + "%"),
                     criteriaBuilder.like(criteriaBuilder.lower(environmentJoin.get("environment_name")), "%" + searchLower + "%")
             );
@@ -361,12 +361,12 @@ public class EquipmentServiceImp implements EquipmentService {
 
         TypedQuery<Equipment> query = entityManager.createQuery(criteriaQuery);
 
-        List<String> eq = query.getResultList().stream().map(Equipment::getIdEquipment).toList();
+        List<String> eq = query.getResultList().stream().map(Equipment::getCodigo).toList();
         List<EquipmentSearchBarDTO> locationEquips = new ArrayList<>();
         List<String> responsible = new ArrayList<>();
 
         for (String equip: eq){
-            Equipment equipment = equipmentRepository.findById(equip).orElse(null);
+            Equipment equipment = equipmentRepository.findByCodigo(equip).orElse(null);
             TrackingHistory realLocation  = trackingHistoryRepository.findTop1ByEquipmentOrderByIdDesc(equipment);
             System.out.println("============="+realLocation.getId()+"=====================");
 

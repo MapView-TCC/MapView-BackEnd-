@@ -19,7 +19,7 @@ public record EquipmentSearchBarDTO(String id_equipment,
                                     ) {
 
     public EquipmentSearchBarDTO(Equipment equipment,TrackingHistory location,List<String> responsibles){
-        this(equipment.getIdEquipment(),
+        this(equipment.getCodigo(),
                 equipment.getName_equipment(),
                 equipment.getLocation().getPost().getPost(),
                 equipment.getOwner().getId_owner(),

@@ -82,7 +82,7 @@ public class ExcelServiceImp implements ExcelService {
         for (Equipment equipment : equipments) {
             HSSFRow dataRow = sheet.createRow(dataRowIndex);
 
-            createDataCell(dataRow, 0, equipment.getIdEquipment(), dataStyle);
+            createDataCell(dataRow, 0, equipment.getCodigo(), dataStyle);
             createDataCell(dataRow, 1, equipment.getType(), dataStyle);
             createDataCell(dataRow, 2, equipment.getModel().toString(), dataStyle);
             createDataCell(dataRow, 3, getQuarterStringFromDate(equipment.getValidity()), dataStyle);

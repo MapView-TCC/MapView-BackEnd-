@@ -20,7 +20,7 @@ public record TrackingHistoryWrongLocationDTO(
 
 
     public TrackingHistoryWrongLocationDTO(Equipment equipment, Environment environment, List<String> responsibles) {
-        this(equipment.getIdEquipment(),
+        this(equipment.getCodigo(),
                 equipment.getName_equipment(),
                 environment.getEnvironment_name(),
                 equipment.getLocation().getEnvironment().getEnvironment_name()

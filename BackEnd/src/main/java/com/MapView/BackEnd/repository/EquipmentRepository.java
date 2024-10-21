@@ -15,9 +15,10 @@ import java.util.Optional;
 public interface EquipmentRepository extends JpaRepository<Equipment,String> {
     List<Equipment> findAllByOperativeTrue(Pageable pageable);
     List<Equipment> findAllByOperativeTrue();
-    Optional<Equipment> findByIdEquipmentAndOperativeTrue(String id);
-    Optional<Equipment> findByValidity(LocalDate validity);
+   // Optional<Equipment> findByIdEquipmentAndOperativeTrue(String id);
+    Optional<Equipment> findByCodigo(String cod);
     List<Equipment> findByModel(EnumModelEquipment equipment);
     Optional<Equipment> findByRfid(Long rfid);
 
+    Optional<Equipment> findByCodigoAndOperativeTrue(String idEquipment);
 }

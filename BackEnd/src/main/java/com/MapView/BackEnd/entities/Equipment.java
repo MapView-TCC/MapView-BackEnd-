@@ -20,8 +20,10 @@ import java.util.Set;
 public class Equipment {
 
     @Id
-    @Column(name = "id_equipment")
-    private String idEquipment;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "cod_equipment")
+    private String codigo;
 
     // novo campo
     private String name_equipment;
@@ -58,7 +60,7 @@ public class Equipment {
 
 
     public Equipment(EquipmentCreateDTO data, LocalDate date, Location location, MainOwner id_owner) {
-        this.idEquipment = data.id_equipment();
+        this.codigo = data.id_equipment();
         this.name_equipment = data.name_equipment();
         this.rfid = data.rfid();
         this.type = data.type();
@@ -71,7 +73,7 @@ public class Equipment {
         this.operative = true;
     }
     public Equipment(String id_equipment, Long rfid) {
-        this.idEquipment = id_equipment;
+        this.codigo = id_equipment;
         this.rfid = rfid;
         this.type = null;
         this.model = null;
@@ -83,7 +85,7 @@ public class Equipment {
         this.operative = true;
     }
     public Equipment(Long rfid) {
-        this.idEquipment = null;
+        this.codigo = null;
         this.rfid = rfid;
         this.type = null;
         this.model = null;
